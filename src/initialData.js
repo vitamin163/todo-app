@@ -1,5 +1,5 @@
 // шаблон состояния. Можно удалять.
-const state = {
+/* const state = {
   tasks: {
     'task-1': { id: 'task-1', content: 'купить хлеб' },
     'task-2': { id: 'task-2', content: 'получить работу' },
@@ -12,4 +12,4 @@ const state = {
     },
   },
   columnOrder: ['column-1'],
-};
+}; */
