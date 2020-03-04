@@ -4,21 +4,17 @@ import { reduxForm, Field } from 'redux-form';
 import { connect } from 'react-redux';
 import * as actions from '../../actions';
 
-
-const mapStateToProps = () => {
-  const props = {};
-  return props;
-};
+const mapStateToProps = () => ({});
 
 const actionCreators = { addTask: actions.addTask };
 
 class NewTaskForm extends React.Component {
-  handleSubmit = (values) => {
+  handleSubmit = values => {
     const { addTask, reset } = this.props;
     const task = { ...values, id: _.uniqueId() };
     addTask({ task });
     reset();
-  }
+  };
 
   render() {
     const { handleSubmit } = this.props;
@@ -30,12 +26,17 @@ class NewTaskForm extends React.Component {
         <div className="form-group mx-3">
           <Field name="content" required component="input" type="text" />
         </div>
-        <button type="submit" className="btn btn-primary btn-sm">Add task</button>
+        <button type="submit" className="btn btn-primary btn-sm">
+          Add task
+        </button>
       </form>
     );
   }
 }
-const ConnectedNewTaskForm = connect(mapStateToProps, actionCreators)(NewTaskForm);
+const ConnectedNewTaskForm = connect(
+  mapStateToProps,
+  actionCreators
+)(NewTaskForm);
 
 export default reduxForm({
   form: 'newTask',

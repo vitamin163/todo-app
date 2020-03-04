@@ -22,7 +22,12 @@ export default class Column extends React.Component {
               {...provided.droppableProps}
             >
               {tasks.map((task, index) => (
-                <Task key={task.id} task={task} index={index} />
+                <Task
+                  key={task.id}
+                  task={task}
+                  columnId={column.id}
+                  index={index}
+                />
               ))}
               {provided.placeholder}
             </div>

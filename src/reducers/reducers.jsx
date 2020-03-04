@@ -25,12 +25,12 @@ const columns = handleActions(
       const updateColumn1 = { ...column1, taskIds: updateTaskIds };
       return { ...state, column1: updateColumn1 };
     },
-    [actions.removeTask](state, { payload: { id } }) {
-      const { column1 } = state;
-      const { taskIds } = column1;
+    [actions.removeTask](state, { payload: { id, columnId } }) {
+      const column = state[columnId];
+      const { taskIds } = column;
       const updateTaskIds = _.without(taskIds, id);
-      const updateColumn1 = { ...column1, taskIds: updateTaskIds };
-      return { ...state, column1: updateColumn1 };
+      const updateColumn = { ...column, taskIds: updateTaskIds };
+      return { ...state, [columnId]: updateColumn };
     },
     [actions.moveTask](state, { payload: { result } }) {
       const { draggableId, source, destination } = result;
