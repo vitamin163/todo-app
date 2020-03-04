@@ -1,5 +1,5 @@
 import React from 'react';
-import classes from './Column.module.scss';
+import classes from './Column.module.css';
 import Task from '../Task/Task';
 import {Droppable} from 'react-beautiful-dnd';
 

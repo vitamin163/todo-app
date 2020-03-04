@@ -1,5 +1,6 @@
 import { createAction } from 'redux-actions';
 
-export const addTask = createAction('TASK_ADD');
-export const removeTask = createAction('TASK_REMOVE');
-export const moveTask = createAction('TASK_MOVE');
+export const addTask = createAction('ADD_TASK');
+export const removeTask = createAction('REMOVE_TASK');
+export const moveTask = createAction('MOVE_TASK');
+export const moveTaskOtherColumn = createAction('MOVE_TASK_OTHER_COLUMN');

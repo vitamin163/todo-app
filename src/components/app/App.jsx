@@ -1,9 +1,10 @@
 import React from 'react';
 import { connect } from 'react-redux';
+import {DragDropContext} from 'react-beautiful-dnd';
 import * as actions from '../../actions';
 import NewTaskForm from '../NewTaskForm/NewTaskForm';
 import Column from '../Column/Column';
-import {DragDropContext} from 'react-beautiful-dnd';
+import classes from './App.module.css';
 
 const mapStateToProps = (state) => {
   const props = {
@@ -30,7 +31,10 @@ class App extends React.Component {
       ) {
         return;
     }
-    moveTask({ result });
+    if (destination.droppableId === source.droppableId ) {
+      moveTask({ result });
+    }
+    
   }
 
   render() {
@@ -39,11 +43,13 @@ class App extends React.Component {
       <>
         <NewTaskForm />
           <DragDropContext onDragEnd={this.onDragEnd}>
-          {columnOrder.map((columnId) => {
-            const column = columns[columnId];
-            const columnTasks = column.taskIds.map((taskId) => tasks[taskId]);
-            return <Column key={column.id} column={column} tasks={columnTasks} />;
-          })}
+            <div className={classes.AppContainer}>
+              {columnOrder.map((columnId) => {
+                const column = columns[columnId];
+                const columnTasks = column.taskIds.map((taskId) => tasks[taskId]);
+                return <Column key={column.id} column={column} tasks={columnTasks} />;
+              })}
+          </div>
           </DragDropContext>
       </>
     );
