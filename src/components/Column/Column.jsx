@@ -4,11 +4,6 @@ import classes from './Column.module.css';
 import Task from '../Task/Task';
 
 export default class Column extends React.Component {
-  constructor(props) {
-    super(props);
-    this.columnRef = React.createRef();
-  }
-
   render() {
     const { column, tasks } = this.props;
     return (

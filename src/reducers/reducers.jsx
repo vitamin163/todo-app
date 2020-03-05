@@ -6,10 +6,10 @@ import * as actions from '../actions';
 
 const tasks = handleActions(
   {
-    [actions.addTask](state, { payload: { task } }) {
+    [actions.addTaskSuccess](state, { payload: { task } }) {
       return { ...state, [task.id]: task };
     },
-    [actions.removeTask](state, { payload: { id } }) {
+    [actions.removeTaskSuccess](state, { payload: { id } }) {
       return { ..._.omit(state, id) };
     },
   },
@@ -18,14 +18,14 @@ const tasks = handleActions(
 
 const columns = handleActions(
   {
-    [actions.addTask](state, { payload: { task } }) {
+    [actions.addTaskSuccess](state, { payload: { task } }) {
       const { column1 } = state;
       const { taskIds } = column1;
       const updateTaskIds = [task.id, ...taskIds];
       const updateColumn1 = { ...column1, taskIds: updateTaskIds };
       return { ...state, column1: updateColumn1 };
     },
-    [actions.removeTask](state, { payload: { id, columnId } }) {
+    [actions.removeTaskSuccess](state, { payload: { id, columnId } }) {
       const column = state[columnId];
       const { taskIds } = column;
       const updateTaskIds = _.without(taskIds, id);
@@ -37,7 +37,7 @@ const columns = handleActions(
       const column = state[source.droppableId];
       const newTaskIds = [...column.taskIds];
       newTaskIds.splice(source.index, 1);
-      newTaskIds.splice(destination.index, 0, draggableId);
+      newTaskIds.splice(destination.index, 0, +draggableId);
       const newColumn = { ...column, taskIds: newTaskIds };
       return { ...state, [source.droppableId]: newColumn };
     },
@@ -49,7 +49,7 @@ const columns = handleActions(
       startTaskIds.splice(source.index, 1);
       const newStartColumn = { ...startColumn, taskIds: startTaskIds };
       const finishTaskIds = [...finishColumn.taskIds];
-      finishTaskIds.splice(destination.index, 0, draggableId);
+      finishTaskIds.splice(destination.index, 0, +draggableId);
       const newFinishColumn = { ...finishColumn, taskIds: finishTaskIds };
       return {
         ...state,
@@ -76,10 +76,25 @@ const columns = handleActions(
     },
   }
 );
+const taskRemovingState = handleActions(
+  {
+    [actions.removeTaskRequest]() {
+      return 'requested';
+    },
+    [actions.removeTaskFailure]() {
+      return 'failed';
+    },
+    [actions.removeTaskSuccess]() {
+      return 'finished';
+    },
+  },
+  'none'
+);
 const columnOrder = handleActions({}, ['column1', 'column2', 'column3']);
 export default combineReducers({
   tasks,
   columns,
   columnOrder,
+  taskRemovingState,
   form: formReducer,
 });

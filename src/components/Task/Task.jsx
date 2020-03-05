@@ -10,7 +10,6 @@ const actionCreators = { removeTask: actions.removeTask };
 
 class Task extends React.Component {
   handleRemove = (taskId, columnId) => () => {
-    console.log(columnId);
     const { removeTask } = this.props;
     removeTask({ id: taskId, columnId });
   };
@@ -18,7 +17,7 @@ class Task extends React.Component {
   render() {
     const { task, index, columnId } = this.props;
     return (
-      <Draggable draggableId={task.id} index={index}>
+      <Draggable draggableId={String(task.id)} index={index}>
         {provided => (
           <div
             className={classes.Task}
