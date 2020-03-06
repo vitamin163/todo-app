@@ -19,6 +19,7 @@ const actionCreators = {
   moveTask: actions.moveTask,
   moveTaskOtherColumn: actions.moveTaskOtherColumn,
   fetchUpdateMoveTask: actions.fetchUpdateMoveTask,
+  fetchUpdateMoveTaskOtherColumn: actions.fetchUpdateMoveTaskOtherColumn,
 };
 
 class App extends React.Component {
@@ -28,6 +29,7 @@ class App extends React.Component {
       moveTaskOtherColumn,
       fetchUpdateMoveTask,
       moveTask,
+      fetchUpdateMoveTaskOtherColumn,
     } = this.props;
     const { draggableId, source, destination } = result;
     if (!destination) {
@@ -40,7 +42,21 @@ class App extends React.Component {
       return;
     }
     if (destination.droppableId !== source.droppableId) {
-      moveTaskOtherColumn({ result });
+      const startColumn = columns[source.droppableId];
+      const finishColumn = columns[destination.droppableId];
+      const startTaskIds = [...startColumn.taskIds];
+      startTaskIds.splice(source.index, 1);
+      const newStartColumn = { ...startColumn, taskIds: startTaskIds };
+      const finishTaskIds = [...finishColumn.taskIds];
+      finishTaskIds.splice(destination.index, 0, +draggableId);
+      const newFinishColumn = { ...finishColumn, taskIds: finishTaskIds };
+      moveTaskOtherColumn({ newStartColumn, newFinishColumn });
+      await fetchUpdateMoveTaskOtherColumn({
+        startColumn,
+        finishColumn,
+        newStartColumn,
+        newFinishColumn,
+      });
       return;
     }
     const column = columns[source.droppableId];

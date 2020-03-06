@@ -19,6 +19,7 @@ class NewTaskForm extends React.Component {
     try {
       await addTask({ task, column1 });
     } catch (e) {
+      console.log('сервер не отвеает NewTaskForm');
       throw new SubmissionError({ _error: e.message });
     }
     reset();

@@ -38,20 +38,24 @@ const columns = handleActions(
     [actions.moveTaskFailure](state, { payload: { column } }) {
       return { ...state, [column.id]: column };
     },
-    [actions.moveTaskOtherColumn](state, { payload: { result } }) {
-      const { draggableId, source, destination } = result;
-      const startColumn = state[source.droppableId];
-      const finishColumn = state[destination.droppableId];
-      const startTaskIds = [...startColumn.taskIds];
-      startTaskIds.splice(source.index, 1);
-      const newStartColumn = { ...startColumn, taskIds: startTaskIds };
-      const finishTaskIds = [...finishColumn.taskIds];
-      finishTaskIds.splice(destination.index, 0, +draggableId);
-      const newFinishColumn = { ...finishColumn, taskIds: finishTaskIds };
+    [actions.moveTaskOtherColumn](
+      state,
+      { payload: { newStartColumn, newFinishColumn } }
+    ) {
       return {
         ...state,
         [newStartColumn.id]: newStartColumn,
         [newFinishColumn.id]: newFinishColumn,
+      };
+    },
+    [actions.moveTaskOtherColumnFailure](
+      state,
+      { payload: { startColumn, finishColumn } }
+    ) {
+      return {
+        ...state,
+        [startColumn.id]: startColumn,
+        [finishColumn.id]: finishColumn,
       };
     },
   },
