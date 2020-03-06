@@ -5,19 +5,23 @@ export const moveTaskRequest = createAction('MOVE_TASK_REQUEST'); // сдела�
 export const moveTaskSuccess = createAction('MOVE_TASK_SUCCESS');
 export const moveTaskFailure = createAction('MOVE_TASK_FAILURE');
 
-export const moveTask = ({ newColumn }) => async dispatch => {
+export const fetchUpdateMoveTask = ({
+  column,
+  newColumn,
+}) => async dispatch => {
   dispatch(moveTaskRequest());
   try {
-    const response = await axios.patch(
-      `http://localhost:3001/columns/${newColumn.id}`,
-      { ...newColumn }
-    );
-    dispatch(moveTaskSuccess({ column: response.data }));
+    await axios.patch(`http://localhost:3001/columns/${newColumn.id}`, {
+      ...newColumn,
+    });
   } catch (e) {
-    dispatch(moveTaskFailure());
+    await dispatch(moveTaskFailure({ column }));
+    console.log('сервер не отвечает!');
     throw e;
   }
 };
+
+export const moveTask = createAction('MOVE_TASK');
 
 export const moveTaskOtherColumn = createAction('MOVE_TASK_OTHER_COLUMN');
 

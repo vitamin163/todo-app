@@ -32,7 +32,10 @@ const columns = handleActions(
       const updateColumn = { ...column, taskIds: updateTaskIds };
       return { ...state, [columnId]: updateColumn };
     },
-    [actions.moveTaskSuccess](state, { payload: { column } }) {
+    [actions.moveTask](state, { payload: { column } }) {
+      return { ...state, [column.id]: column };
+    },
+    [actions.moveTaskFailure](state, { payload: { column } }) {
       return { ...state, [column.id]: column };
     },
     [actions.moveTaskOtherColumn](state, { payload: { result } }) {

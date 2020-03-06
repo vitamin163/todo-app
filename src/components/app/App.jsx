@@ -18,11 +18,17 @@ const mapStateToProps = state => {
 const actionCreators = {
   moveTask: actions.moveTask,
   moveTaskOtherColumn: actions.moveTaskOtherColumn,
+  fetchUpdateMoveTask: actions.fetchUpdateMoveTask,
 };
 
 class App extends React.Component {
   onDragEnd = async result => {
-    const { columns, moveTask, moveTaskOtherColumn } = this.props;
+    const {
+      columns,
+      moveTaskOtherColumn,
+      fetchUpdateMoveTask,
+      moveTask,
+    } = this.props;
     const { draggableId, source, destination } = result;
     if (!destination) {
       return;
@@ -43,7 +49,8 @@ class App extends React.Component {
     newTaskIds.splice(source.index, 1);
     newTaskIds.splice(destination.index, 0, +draggableId);
     const newColumn = { ...column, taskIds: newTaskIds };
-    await moveTask({ newColumn });
+    moveTask({ column: newColumn });
+    await fetchUpdateMoveTask({ column, newColumn });
   };
 
   render() {
