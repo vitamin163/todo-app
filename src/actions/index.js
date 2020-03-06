@@ -27,9 +27,17 @@ export const moveTaskOtherColumn = createAction('MOVE_TASK_OTHER_COLUMN');
 
 export const addTaskSuccess = createAction('TASK_ADD_SUCCESS');
 
-export const addTask = ({ task }) => async dispatch => {
-  const response = await axios.post('http://localhost:3001/tasks', { ...task });
-  dispatch(addTaskSuccess({ task: response.data }));
+export const addTask = ({ task, column1 }) => async dispatch => {
+  const responseTask = await axios.post('http://localhost:3001/tasks', {
+    ...task,
+  });
+  const { id } = responseTask.data;
+  const newTaskIds = [id, ...column1.taskIds];
+  const newColumn1 = { ...column1, taskIds: newTaskIds };
+  await axios.patch('http://localhost:3001/columns/column1', {
+    ...newColumn1,
+  });
+  dispatch(addTaskSuccess({ task: responseTask.data }));
 };
 
 export const removeTaskRequest = createAction('REMOVE_TASK_REQUEST');

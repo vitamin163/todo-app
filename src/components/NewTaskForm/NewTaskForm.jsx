@@ -3,16 +3,21 @@ import { reduxForm, Field, SubmissionError } from 'redux-form';
 import { connect } from 'react-redux';
 import * as actions from '../../actions';
 
-const mapStateToProps = () => ({});
+const mapStateToProps = state => {
+  const props = {
+    column1: state.columns.column1,
+  };
+  return props;
+};
 
 const actionCreators = { addTask: actions.addTask };
 
 class NewTaskForm extends React.Component {
   handleSubmit = async values => {
-    const { addTask, reset } = this.props;
+    const { addTask, reset, column1 } = this.props;
+    const task = { ...values };
     try {
-      const task = { ...values };
-      await addTask({ task });
+      await addTask({ task, column1 });
     } catch (e) {
       throw new SubmissionError({ _error: e.message });
     }
