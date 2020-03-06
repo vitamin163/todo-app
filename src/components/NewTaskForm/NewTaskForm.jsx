@@ -12,7 +12,7 @@ class NewTaskForm extends React.Component {
     const { addTask, reset } = this.props;
     try {
       const task = { ...values };
-      addTask({ task });
+      await addTask({ task });
     } catch (e) {
       throw new SubmissionError({ _error: e.message });
     }

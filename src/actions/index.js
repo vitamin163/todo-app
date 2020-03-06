@@ -1,7 +1,24 @@
 import { createAction } from 'redux-actions';
 import axios from 'axios';
 
-export const moveTask = createAction('MOVE_TASK');
+export const moveTaskRequest = createAction('MOVE_TASK_REQUEST'); // сделать в редюсере taskMovingState
+export const moveTaskSuccess = createAction('MOVE_TASK_SUCCESS');
+export const moveTaskFailure = createAction('MOVE_TASK_FAILURE');
+
+export const moveTask = ({ newColumn }) => async dispatch => {
+  dispatch(moveTaskRequest());
+  try {
+    const response = await axios.patch(
+      `http://localhost:3001/columns/${newColumn.id}`,
+      { ...newColumn }
+    );
+    dispatch(moveTaskSuccess({ column: response.data }));
+  } catch (e) {
+    dispatch(moveTaskFailure());
+    throw e;
+  }
+};
+
 export const moveTaskOtherColumn = createAction('MOVE_TASK_OTHER_COLUMN');
 
 export const addTaskSuccess = createAction('TASK_ADD_SUCCESS');

@@ -32,14 +32,8 @@ const columns = handleActions(
       const updateColumn = { ...column, taskIds: updateTaskIds };
       return { ...state, [columnId]: updateColumn };
     },
-    [actions.moveTask](state, { payload: { result } }) {
-      const { draggableId, source, destination } = result;
-      const column = state[source.droppableId];
-      const newTaskIds = [...column.taskIds];
-      newTaskIds.splice(source.index, 1);
-      newTaskIds.splice(destination.index, 0, +draggableId);
-      const newColumn = { ...column, taskIds: newTaskIds };
-      return { ...state, [source.droppableId]: newColumn };
+    [actions.moveTaskSuccess](state, { payload: { column } }) {
+      return { ...state, [column.id]: column };
     },
     [actions.moveTaskOtherColumn](state, { payload: { result } }) {
       const { draggableId, source, destination } = result;

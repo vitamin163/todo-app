@@ -21,9 +21,9 @@ const actionCreators = {
 };
 
 class App extends React.Component {
-  onDragEnd = result => {
-    const { moveTask, moveTaskOtherColumn } = this.props;
-    const { source, destination } = result;
+  onDragEnd = async result => {
+    const { columns, moveTask, moveTaskOtherColumn } = this.props;
+    const { draggableId, source, destination } = result;
     if (!destination) {
       return;
     }
@@ -37,7 +37,13 @@ class App extends React.Component {
       moveTaskOtherColumn({ result });
       return;
     }
-    moveTask({ result });
+    const column = columns[source.droppableId];
+
+    const newTaskIds = [...column.taskIds];
+    newTaskIds.splice(source.index, 1);
+    newTaskIds.splice(destination.index, 0, +draggableId);
+    const newColumn = { ...column, taskIds: newTaskIds };
+    await moveTask({ newColumn });
   };
 
   render() {
