@@ -25,12 +25,8 @@ const columns = handleActions(
       const updateColumn1 = { ...column1, taskIds: updateTaskIds };
       return { ...state, column1: updateColumn1 };
     },
-    [actions.removeTaskSuccess](state, { payload: { id, columnId } }) {
-      const column = state[columnId];
-      const { taskIds } = column;
-      const updateTaskIds = _.without(taskIds, id);
-      const updateColumn = { ...column, taskIds: updateTaskIds };
-      return { ...state, [columnId]: updateColumn };
+    [actions.removeTaskSuccess](state, { payload: { updateColumn } }) {
+      return { ...state, [updateColumn.id]: updateColumn };
     },
     [actions.moveTask](state, { payload: { column } }) {
       return { ...state, [column.id]: column };

@@ -78,11 +78,15 @@ export const removeTaskRequest = createAction('REMOVE_TASK_REQUEST');
 export const removeTaskSuccess = createAction('REMOVE_TASK_SUCCESS');
 export const removeTaskFailure = createAction('REMOVE_TASK_FAILURE');
 
-export const removeTask = ({ id, columnId }) => async dispatch => {
+export const removeTask = ({ id, column }) => async dispatch => {
   dispatch(removeTaskRequest());
   try {
-    await axios.delete(`http://localhost:3001/tasks/${id}`);
-    dispatch(removeTaskSuccess({ id, columnId }));
+    const promise1 = axios.patch(`http://localhost:3001/columns/${column.id}`, {
+      ...column,
+    });
+    const promise2 = axios.delete(`http://localhost:3001/tasks/${id}`);
+    const [{ data: updateColumn }] = await Promise.all([promise1, promise2]);
+    dispatch(removeTaskSuccess({ id, updateColumn }));
   } catch (e) {
     dispatch(removeTaskFailure());
     throw e;

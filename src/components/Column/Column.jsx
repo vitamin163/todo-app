@@ -20,6 +20,7 @@ export default class Column extends React.Component {
                 <Task
                   key={task.id}
                   task={task}
+                  column={column}
                   columnId={column.id}
                   index={index}
                 />
