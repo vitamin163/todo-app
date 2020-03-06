@@ -6,6 +6,12 @@ import * as actions from '../actions';
 
 const tasks = handleActions(
   {
+    [actions.fetchTasksSuccess](state, { payload: { allTasks } }) {
+      const updatedTasks = allTasks.reduce((acc, task) => {
+        return { ...acc, [task.id]: task };
+      }, {});
+      return { ...updatedTasks };
+    },
     [actions.addTaskSuccess](state, { payload: { task } }) {
       return { ...state, [task.id]: task };
     },
@@ -18,6 +24,12 @@ const tasks = handleActions(
 
 const columns = handleActions(
   {
+    [actions.fetchTasksSuccess](state, { payload: { allColumns } }) {
+      const updatedColumns = allColumns.reduce((acc, column) => {
+        return { ...acc, [column.id]: column };
+      }, {});
+      return { ...updatedColumns };
+    },
     [actions.addTaskSuccess](state, { payload: { task } }) {
       const { column1 } = state;
       const { taskIds } = column1;

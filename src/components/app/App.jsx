@@ -23,7 +23,7 @@ const actionCreators = {
 };
 
 class App extends React.Component {
-  onDragEnd = async result => {
+  onDragEnd = result => {
     const {
       columns,
       moveTaskOtherColumn,
@@ -51,7 +51,7 @@ class App extends React.Component {
       finishTaskIds.splice(destination.index, 0, +draggableId);
       const newFinishColumn = { ...finishColumn, taskIds: finishTaskIds };
       moveTaskOtherColumn({ newStartColumn, newFinishColumn });
-      await fetchUpdateMoveTaskOtherColumn({
+      fetchUpdateMoveTaskOtherColumn({
         startColumn,
         finishColumn,
         newStartColumn,
@@ -66,7 +66,7 @@ class App extends React.Component {
     newTaskIds.splice(destination.index, 0, +draggableId);
     const newColumn = { ...column, taskIds: newTaskIds };
     moveTask({ column: newColumn });
-    await fetchUpdateMoveTask({ column, newColumn });
+    fetchUpdateMoveTask({ column, newColumn });
   };
 
   render() {

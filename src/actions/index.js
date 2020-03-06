@@ -92,3 +92,25 @@ export const removeTask = ({ id, column }) => async dispatch => {
     throw e;
   }
 };
+
+export const fetchTasksRequest = createAction('TASKS_FETCH_REQUEST');
+export const fetchTasksSuccess = createAction('TASKS_FETCH_SUCCESS');
+export const fetchTasksFailure = createAction('TASKS_FETCH_FAILURE');
+
+export const fetchTasks = () => async dispatch => {
+  // dispatch(fetchTasksRequest());
+  try {
+    const tasksResponse = axios.get('http://localhost:3001/tasks');
+    const columnsResponse = axios.get('http://localhost:3001/columns');
+    const [{ data: allTasks }, { data: allColumns }] = await Promise.all([
+      tasksResponse,
+      columnsResponse,
+    ]);
+
+    dispatch(fetchTasksSuccess({ allTasks, allColumns }));
+  } catch (e) {
+    // dispatch(fetchTasksFailure());
+    console.log(e); // убрать
+    throw e;
+  }
+};
