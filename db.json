@@ -1,10 +1,24 @@
 {
-  "tasks": [],
+  "tasks": [
+    {
+      "content": "vit1",
+      "user": "vitalik.domnin@gmail.com",
+      "id": 1
+    },
+    {
+      "content": "vit2",
+      "user": "vitalik.domnin@gmail.com",
+      "id": 2
+    }
+  ],
   "columns": [
     {
       "id": "column1",
       "title": "To Do",
-      "taskIds": []
+      "taskIds": [
+        2,
+        1
+      ]
     },
     {
       "id": "column2",
@@ -21,5 +35,17 @@
     "column1",
     "column2",
     "column3"
+  ],
+  "users": [
+    {
+      "email": "vitalik.domnin@gmail.com",
+      "password": "$2a$10$FmbF//r8/Kx4gWwdSRGW4OCskZK6aF/B8Ui2vk9K5ZLIxOPYfec32",
+      "id": 1
+    },
+    {
+      "email": "yulya@gmail.com",
+      "password": "$2a$10$wggweV3gQXNOFrstwfNr5uxCS4UfFG9WIN5mdqlQ49VoevyN.wjL.",
+      "id": 2
+    }
   ]
 }

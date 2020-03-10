@@ -1,11 +1,15 @@
 import React from 'react';
 import { reduxForm, Field, SubmissionError } from 'redux-form';
 import { connect } from 'react-redux';
-import * as actions from '../../actions';
+import { Button, Form } from 'react-bootstrap';
+import * as actions from '../../store/actions';
+import Input from '../Input/Input';
+import classes from './NewTaskForm.module.css';
 
 const mapStateToProps = state => {
   const props = {
     column1: state.columns.column1,
+    user: state.auth.user,
   };
   return props;
 };
@@ -14,8 +18,8 @@ const actionCreators = { addTask: actions.addTask };
 
 class NewTaskForm extends React.Component {
   handleSubmit = async values => {
-    const { addTask, reset, column1 } = this.props;
-    const task = { ...values };
+    const { addTask, reset, column1, user } = this.props;
+    const task = { ...values, user };
     try {
       await addTask({ task, column1 });
     } catch (e) {
@@ -28,14 +32,25 @@ class NewTaskForm extends React.Component {
   render() {
     const { handleSubmit } = this.props;
     return (
-      <form onSubmit={handleSubmit(this.handleSubmit)} className="form-inline">
-        <div className="form-group mx-3">
-          <Field name="content" required component="input" type="text" />
-        </div>
-        <button type="submit" className="btn btn-primary btn-sm">
+      <Form
+        className={classes.NewTaskForm}
+        onSubmit={handleSubmit(this.handleSubmit)}
+        inline
+      >
+        <Field
+          name="content"
+          type="text"
+          component={Input}
+          placeholder="add task"
+        />
+        <Button
+          className={classes.NewTaskFormButton}
+          type="submit"
+          variant="info"
+        >
           Add task
-        </button>
-      </form>
+        </Button>
+      </Form>
     );
   }
 }

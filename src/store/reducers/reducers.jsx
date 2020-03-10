@@ -6,8 +6,8 @@ import * as actions from '../actions';
 
 const tasks = handleActions(
   {
-    [actions.fetchTasksSuccess](state, { payload: { allTasks } }) {
-      const updatedTasks = allTasks.reduce((acc, task) => {
+    [actions.fetchTasksSuccess](state, { payload: { userTasks } }) {
+      const updatedTasks = userTasks.reduce((acc, task) => {
         return { ...acc, [task.id]: task };
       }, {});
       return { ...updatedTasks };
@@ -24,9 +24,17 @@ const tasks = handleActions(
 
 const columns = handleActions(
   {
-    [actions.fetchTasksSuccess](state, { payload: { allColumns } }) {
+    [actions.fetchTasksSuccess](state, { payload: { userTasks, allColumns } }) {
+      const allUserTaskIds = userTasks.reduce((acc, task) => {
+        return [...acc, task.id];
+      }, []);
+
       const updatedColumns = allColumns.reduce((acc, column) => {
-        return { ...acc, [column.id]: column };
+        const updatedTaskIds = column.taskIds.filter(id =>
+          allUserTaskIds.includes(id)
+        );
+        const updatedColumn = { ...column, taskIds: updatedTaskIds };
+        return { ...acc, [column.id]: updatedColumn };
       }, {});
       return { ...updatedColumns };
     },
@@ -100,10 +108,26 @@ const taskRemovingState = handleActions(
   'none'
 );
 const columnOrder = handleActions({}, ['column1', 'column2', 'column3']);
+
+const auth = handleActions(
+  {
+    [actions.loginSuccess](state, { payload: { token, email } }) {
+      return { ...state, token, user: email };
+    },
+    [actions.logout](state) {
+      console.log('logout');
+      localStorage.removeItem('token');
+      localStorage.removeItem('expirationDate');
+      return { ...state, token: null, user: null };
+    },
+  },
+  { token: null, user: null }
+);
 export default combineReducers({
   tasks,
   columns,
   columnOrder,
   taskRemovingState,
   form: formReducer,
+  auth,
 });

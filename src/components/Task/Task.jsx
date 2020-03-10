@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import _ from 'lodash';
 import { Draggable } from 'react-beautiful-dnd';
-import * as actions from '../../actions';
+import * as actions from '../../store/actions';
 import classes from './Task.module.css';
 
 const mapStateToProps = () => ({});

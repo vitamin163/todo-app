@@ -1,16 +1,19 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { DragDropContext } from 'react-beautiful-dnd';
-import * as actions from '../../actions';
+import { Button } from 'react-bootstrap';
+import { NavLink } from 'react-router-dom';
+import * as actions from '../../store/actions';
 import NewTaskForm from '../NewTaskForm/NewTaskForm';
 import Column from '../Column/Column';
-import classes from './App.module.css';
+import classes from './Tasks.module.css';
 
 const mapStateToProps = state => {
   const props = {
     tasks: state.tasks,
     columns: state.columns,
     columnOrder: state.columnOrder,
+    user: state.auth.user,
   };
   return props;
 };
@@ -20,9 +23,15 @@ const actionCreators = {
   moveTaskOtherColumn: actions.moveTaskOtherColumn,
   fetchUpdateMoveTask: actions.fetchUpdateMoveTask,
   fetchUpdateMoveTaskOtherColumn: actions.fetchUpdateMoveTaskOtherColumn,
+  fetchTasks: actions.fetchTasks,
 };
 
-class App extends React.Component {
+class Tasks extends React.Component {
+  async componentDidMount() {
+    const { fetchTasks, user } = this.props;
+    await fetchTasks(user);
+  }
+
   onDragEnd = result => {
     const {
       columns,
@@ -75,7 +84,7 @@ class App extends React.Component {
       <>
         <NewTaskForm />
         <DragDropContext onDragEnd={this.onDragEnd}>
-          <div className={classes.AppContainer}>
+          <div className={classes.TasksContainer}>
             {columnOrder.map(columnId => {
               const column = columns[columnId];
               const columnTasks = column.taskIds.map(taskId => tasks[taskId]);
@@ -85,9 +94,12 @@ class App extends React.Component {
             })}
           </div>
         </DragDropContext>
+        <NavLink to="/logout">
+          <Button variant="info">Logout</Button>
+        </NavLink>
       </>
     );
   }
 }
 
-export default connect(mapStateToProps, actionCreators)(App);
+export default connect(mapStateToProps, actionCreators)(Tasks);

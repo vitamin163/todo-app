@@ -3,9 +3,10 @@ import { render } from 'react-dom';
 import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
 import { createStore, applyMiddleware, compose } from 'redux';
-import reducers from './reducers/reducers';
-import App from './components/app/App';
-import { fetchTasks } from './actions';
+import { BrowserRouter } from 'react-router-dom';
+import reducers from './store/reducers/reducers';
+import App from './components/App/App';
+import { fetchTasks } from './store/actions';
 
 /* eslint-disable no-underscore-dangle */
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
@@ -13,13 +14,13 @@ const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 
 const store = createStore(reducers, composeEnhancers(applyMiddleware(thunk)));
 
-store.dispatch(fetchTasks());
+// store.dispatch(fetchTasks());
 
+const app = (
+  <BrowserRouter>
+    <App />
+  </BrowserRouter>
+);
 const root = document.getElementById('root');
 
-render(
-  <Provider store={store}>
-    <App />
-  </Provider>,
-  root
-);
+render(<Provider store={store}>{app}</Provider>, root);
