@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { DragDropContext } from 'react-beautiful-dnd';
-import { Button } from 'react-bootstrap';
+import { Button, Spinner } from 'react-bootstrap';
 import { NavLink } from 'react-router-dom';
 import * as actions from '../../store/actions';
 import NewTaskForm from '../NewTaskForm/NewTaskForm';
@@ -10,10 +10,10 @@ import classes from './Tasks.module.css';
 
 const mapStateToProps = state => {
   const props = {
-    tasks: state.tasks,
-    columns: state.columns,
+    tasks: state.users.tasks,
+    columns: state.users.columns,
     columnOrder: state.columnOrder,
-    user: state.auth.user,
+    userId: state.auth.userId,
   };
   return props;
 };
@@ -27,9 +27,9 @@ const actionCreators = {
 };
 
 class Tasks extends React.Component {
-  async componentDidMount() {
-    const { fetchTasks, user } = this.props;
-    await fetchTasks(user);
+  componentDidMount() {
+    const { fetchTasks, userId } = this.props;
+    fetchTasks(userId);
   }
 
   onDragEnd = result => {
@@ -80,6 +80,9 @@ class Tasks extends React.Component {
 
   render() {
     const { tasks, columns, columnOrder } = this.props;
+    if (!tasks) {
+      return <Spinner animation="grow" variant="dark" />;
+    }
     return (
       <>
         <NewTaskForm />

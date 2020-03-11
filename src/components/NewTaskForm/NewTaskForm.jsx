@@ -8,8 +8,8 @@ import classes from './NewTaskForm.module.css';
 
 const mapStateToProps = state => {
   const props = {
-    column1: state.columns.column1,
-    user: state.auth.user,
+    column1: state.users.columns.column1,
+    userId: state.auth.userId,
   };
   return props;
 };
@@ -18,10 +18,10 @@ const actionCreators = { addTask: actions.addTask };
 
 class NewTaskForm extends React.Component {
   handleSubmit = async values => {
-    const { addTask, reset, column1, user } = this.props;
-    const task = { ...values, user };
+    const { addTask, reset, column1, userId } = this.props;
+    const task = { ...values };
     try {
-      await addTask({ task, column1 });
+      await addTask({ task, column1, userId });
     } catch (e) {
       console.log('сервер не отвеает NewTaskForm');
       throw new SubmissionError({ _error: e.message });

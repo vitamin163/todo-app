@@ -7,10 +7,12 @@ import classes from './Auth.module.css';
 import Input from '../Input/Input';
 import * as actions from '../../store/actions';
 
-const mapStateToProps = () => ({});
+const mapStateToProps = state => ({
+  userId: state.auth.userId,
+});
 
 const actionCreators = {
-  login: actions.login,
+  login: actions.auth,
 };
 
 class Auth extends React.Component {
@@ -18,8 +20,9 @@ class Auth extends React.Component {
     const { reset, login } = this.props;
     const { email, password } = value;
     try {
-      await login(email, password);
+      await login(email, password, 'login');
     } catch (e) {
+      console.log(e);
       console.log('Ошибка доступа Auth');
       throw new SubmissionError({ _error: e.message });
     }

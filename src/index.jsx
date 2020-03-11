@@ -6,15 +6,12 @@ import { createStore, applyMiddleware, compose } from 'redux';
 import { BrowserRouter } from 'react-router-dom';
 import reducers from './store/reducers/reducers';
 import App from './components/App/App';
-import { fetchTasks } from './store/actions';
 
 /* eslint-disable no-underscore-dangle */
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 /* eslint-enable */
 
 const store = createStore(reducers, composeEnhancers(applyMiddleware(thunk)));
-
-// store.dispatch(fetchTasks());
 
 const app = (
   <BrowserRouter>

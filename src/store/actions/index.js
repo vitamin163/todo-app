@@ -1,5 +1,7 @@
 import { createAction } from 'redux-actions';
 import axios from 'axios';
+import { dbNewUser } from '../../templates/templates';
+import routes from '../../routes';
 
 export const addTaskSuccess = createAction('TASK_ADD_SUCCESS');
 export const moveTask = createAction('MOVE_TASK');
@@ -21,9 +23,9 @@ export const removeTaskSuccess = createAction('REMOVE_TASK_SUCCESS');
 export const removeTaskFailure = createAction('REMOVE_TASK_FAILURE');
 export const fetchTasksRequest = createAction('TASKS_FETCH_REQUEST');
 export const fetchTasksSuccess = createAction('TASKS_FETCH_SUCCESS');
-export const registrationSuccess = createAction('REGISTRATION_SUCCESS');
-export const loginSuccess = createAction('LOGIN_SUCCESS');
+export const authSuccess = createAction('AUTH_SUCCESS');
 export const logout = createAction('LOGOUT');
+export const registrationSuccess = createAction('REGISTRATION_SUCCESS');
 
 export const fetchUpdateMoveTask = ({
   column,
@@ -69,20 +71,19 @@ export const fetchUpdateMoveTaskOtherColumn = ({
   }
 };
 
-export const addTask = ({ task, column1 }) => async dispatch => {
-  const responseTask = await axios.post('http://localhost:3001/tasks', {
+export const addTask = ({ task, column1, userId }) => async dispatch => {
+  const responseTask = await axios.post(routes.tasksPath(userId), {
     ...task,
   });
-  const { id } = responseTask.data;
-  const newTaskIds = [id, ...column1.taskIds];
-  console.log(column1.taskIds);
-  console.log(newTaskIds);
-  const newColumn1 = { ...column1, taskIds: newTaskIds };
 
-  await axios.patch('http://localhost:3001/columns/column1', {
+  const { name: id } = responseTask.data;
+  const newTaskIds = [id, ...column1.taskIds];
+  const newColumn1 = { ...column1, taskIds: newTaskIds };
+  await axios.patch(routes.columnPath(userId, column1.id), {
     ...newColumn1,
   });
-  dispatch(addTaskSuccess({ task: responseTask.data }));
+  const updateTask = { ...task, id };
+  dispatch(addTaskSuccess({ task: updateTask }));
 };
 
 export const removeTask = ({ id, column }) => async dispatch => {
@@ -100,34 +101,19 @@ export const removeTask = ({ id, column }) => async dispatch => {
   }
 };
 
-export const fetchTasks = user => async dispatch => {
+export const fetchTasks = userId => async dispatch => {
   // dispatch(fetchTasksRequest());
   try {
-    const tasksResponse = await axios.get(
-      `http://localhost:3001/tasks?user=${user}`
-    );
-    const columnsResponse = await axios.get('http://localhost:3001/columns');
-    const [{ data: userTasks }, { data: allColumns }] = await Promise.all([
-      tasksResponse,
-      columnsResponse,
-    ]);
+    const response = await axios.get(routes.userPath(userId));
 
-    dispatch(fetchTasksSuccess({ userTasks, allColumns }));
+    const { tasks, columns } = response.data;
+
+    dispatch(fetchTasksSuccess({ tasks, columns }));
   } catch (e) {
     // dispatch(fetchTasksFailure());
     console.log(e); // убрать
     throw e;
   }
-};
-
-export const registration = (email, password) => async dispatch => {
-  const response = await axios.post('http://localhost:3001/register', {
-    email,
-    password,
-  });
-  const { accessToken: token } = response.data;
-  console.log(token);
-  dispatch(registrationSuccess({ email }));
 };
 
 const autoLogout = time => dispatch => {
@@ -136,16 +122,36 @@ const autoLogout = time => dispatch => {
   }, time * 1000);
 };
 
-export const login = (email, password) => async dispatch => {
-  const response = await axios.post('http://localhost:3001/login', {
+export const auth = (email, password, process) => async dispatch => {
+  const authData = {
     email,
     password,
-  });
-  const { accessToken: token } = response.data;
-  const expiresIn = 3600;
+    returnSecureToken: true,
+  };
+  const url = {
+    login:
+      'https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyCHD5DNd6NJgYeMIvMjeeQOJaJgmTdXzgM',
+    registration:
+      'https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyCHD5DNd6NJgYeMIvMjeeQOJaJgmTdXzgM',
+  };
+
+  const response = await axios.post(url[process], authData);
+
+  const { email: responseEmail, localId, idToken, expiresIn } = response.data;
+
+  if (process === 'registration') {
+    const regResponse = await axios.patch(
+      routes.userPath(localId),
+      dbNewUser(responseEmail)
+    );
+    console.log(regResponse.data);
+    dispatch(registrationSuccess({ email: responseEmail }));
+  }
+
   const expirationDate = new Date(new Date().getTime() + expiresIn * 1000);
-  localStorage.setItem('token', token);
+  localStorage.setItem('token', idToken);
+  localStorage.setItem('userId', localId);
   localStorage.setItem('expirationDate', expirationDate);
-  dispatch(loginSuccess({ token, email }));
+  dispatch(authSuccess({ token: idToken, email, userId: localId }));
   dispatch(autoLogout(expiresIn));
 };

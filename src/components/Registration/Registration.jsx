@@ -9,7 +9,7 @@ import * as actions from '../../store/actions';
 const mapStateToProps = () => ({});
 
 const actionCreators = {
-  registration: actions.registration,
+  registration: actions.auth,
 };
 
 class Registration extends React.Component {
@@ -17,7 +17,7 @@ class Registration extends React.Component {
     const { reset, registration } = this.props;
     const { email, password } = value;
     try {
-      await registration(email, password);
+      await registration(email, password, 'registration');
     } catch (e) {
       console.log('сервер не отвечает Registration');
       throw new SubmissionError({ _error: e.message });
