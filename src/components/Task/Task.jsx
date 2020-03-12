@@ -2,20 +2,26 @@ import React from 'react';
 import { connect } from 'react-redux';
 import _ from 'lodash';
 import { Draggable } from 'react-beautiful-dnd';
+import { Button } from 'react-bootstrap';
 import * as actions from '../../store/actions';
 import classes from './Task.module.css';
 
-const mapStateToProps = () => ({});
+const mapStateToProps = state => {
+  const props = {
+    userId: state.auth.userId,
+  };
+  return props;
+};
 
 const actionCreators = { removeTask: actions.removeTask };
 
 class Task extends React.Component {
   handleRemove = (taskId, column) => async () => {
-    const { removeTask } = this.props;
+    const { removeTask, userId } = this.props;
     const { taskIds } = column;
     const updateTaskIds = _.without(taskIds, taskId);
     const updateColumn = { ...column, taskIds: updateTaskIds };
-    await removeTask({ id: taskId, column: updateColumn });
+    await removeTask({ id: taskId, column: updateColumn, userId });
   };
 
   render() {
@@ -30,9 +36,13 @@ class Task extends React.Component {
             ref={provided.innerRef}
           >
             {task.content}
-            <button onClick={this.handleRemove(task.id, column)} type="button">
+            <Button
+              variant="secondary"
+              onClick={this.handleRemove(task.id, column)}
+              type="button"
+            >
               &times;
-            </button>
+            </Button>
           </div>
         )}
       </Draggable>

@@ -5,6 +5,7 @@ import Tasks from '../Tasks/Tasks';
 import Auth from '../Auth/Auth';
 import Registration from '../Registration/Registration';
 import Logout from '../Logout/Logout';
+import classes from './App.module.css';
 
 const mapStateToProps = state => {
   const props = {
@@ -18,19 +19,23 @@ class App extends React.PureComponent {
     const { isAuthenticated } = this.props;
     if (isAuthenticated) {
       return (
-        <>
-          <Redirect to="/tasks" component={Tasks} />
-          <Route path="/tasks" component={Tasks} />
-          <Route path="/logout" component={Logout} />
-        </>
+        <div className={classes.App}>
+          <>
+            <Redirect to="/tasks" component={Tasks} />
+            <Route path="/tasks" component={Tasks} />
+            <Route path="/logout" component={Logout} />
+          </>
+        </div>
       );
     }
     return (
-      <Switch>
-        <Route exact path="/" component={Auth} />
-        <Route path="/registration" component={Registration} />
-        <Redirect to="/" />
-      </Switch>
+      <div className={classes.App}>
+        <Switch>
+          <Route exact path="/" component={Auth} />
+          <Route path="/registration" component={Registration} />
+          <Redirect to="/" />
+        </Switch>
+      </div>
     );
   }
 }

@@ -30,10 +30,11 @@ export const registrationSuccess = createAction('REGISTRATION_SUCCESS');
 export const fetchUpdateMoveTask = ({
   column,
   newColumn,
+  userId,
 }) => async dispatch => {
   dispatch(moveTaskRequest());
   try {
-    await axios.patch(`http://localhost:3001/columns/${newColumn.id}`, {
+    await axios.patch(routes.columnPath(userId, newColumn.id), {
       ...newColumn,
     });
   } catch (e) {
@@ -48,24 +49,26 @@ export const fetchUpdateMoveTaskOtherColumn = ({
   finishColumn,
   newStartColumn,
   newFinishColumn,
+  userId,
 }) => async dispatch => {
   dispatch(moveTaskOtherColumnRequest());
   try {
-    const promise1 = axios.patch(
-      `http://localhost:3001/columns/${newStartColumn.id}`,
+    const response1 = await axios.patch(
+      routes.columnPath(userId, newStartColumn.id),
       {
         ...newStartColumn,
       }
     );
-    const promise2 = axios.patch(
-      `http://localhost:3001/columns/${newFinishColumn.id}`,
+
+    const response2 = await axios.patch(
+      routes.columnPath(userId, newFinishColumn.id),
       {
         ...newFinishColumn,
       }
     );
-    await Promise.all([promise1, promise2]);
+    await Promise.all([response1, response2]);
   } catch (e) {
-    await dispatch(moveTaskOtherColumnFailure({ startColumn, finishColumn }));
+    await dispatch(moveTaskOtherColumnFailure({ startColumn, finishColumn })); // протестировать
     console.log('сервер не отвечает! moveTaskOtherColumnFailure');
     throw e;
   }
@@ -79,6 +82,7 @@ export const addTask = ({ task, column1, userId }) => async dispatch => {
   const { name: id } = responseTask.data;
   const newTaskIds = [id, ...column1.taskIds];
   const newColumn1 = { ...column1, taskIds: newTaskIds };
+  console.log(newColumn1);
   await axios.patch(routes.columnPath(userId, column1.id), {
     ...newColumn1,
   });
@@ -86,15 +90,16 @@ export const addTask = ({ task, column1, userId }) => async dispatch => {
   dispatch(addTaskSuccess({ task: updateTask }));
 };
 
-export const removeTask = ({ id, column }) => async dispatch => {
+export const removeTask = ({ id, column, userId }) => async dispatch => {
   dispatch(removeTaskRequest());
   try {
-    const promise1 = axios.patch(`http://localhost:3001/columns/${column.id}`, {
+    const response1 = axios.patch(routes.columnPath(userId, column.id), {
       ...column,
     });
-    const promise2 = axios.delete(`http://localhost:3001/tasks/${id}`);
-    const [{ data: updateColumn }] = await Promise.all([promise1, promise2]);
-    dispatch(removeTaskSuccess({ id, updateColumn }));
+    const response2 = await axios.delete(routes.taskPath(userId, id));
+    const [{ data: updateColumn }] = await Promise.all([response1, response2]);
+    console.log(updateColumn);
+    dispatch(removeTaskSuccess({ id, column: updateColumn }));
   } catch (e) {
     dispatch(removeTaskFailure());
     throw e;

@@ -1,9 +1,11 @@
 .Task {
+  display: flex;
+  justify-content: space-between;
+  flex-grow: 1;
   border: 1px solid lightgray;
   border-radius: 2px;
   padding: 8px;
   margin-bottom: 8px;
   background-color: white;
-  display: flex;
-  justify-content: space-between;
+  
 }

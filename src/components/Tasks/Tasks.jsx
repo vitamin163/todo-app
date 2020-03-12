@@ -39,6 +39,7 @@ class Tasks extends React.Component {
       fetchUpdateMoveTask,
       moveTask,
       fetchUpdateMoveTaskOtherColumn,
+      userId,
     } = this.props;
     const { draggableId, source, destination } = result;
     if (!destination) {
@@ -57,7 +58,7 @@ class Tasks extends React.Component {
       startTaskIds.splice(source.index, 1);
       const newStartColumn = { ...startColumn, taskIds: startTaskIds };
       const finishTaskIds = [...finishColumn.taskIds];
-      finishTaskIds.splice(destination.index, 0, +draggableId);
+      finishTaskIds.splice(destination.index, 0, draggableId);
       const newFinishColumn = { ...finishColumn, taskIds: finishTaskIds };
       moveTaskOtherColumn({ newStartColumn, newFinishColumn });
       fetchUpdateMoveTaskOtherColumn({
@@ -65,17 +66,19 @@ class Tasks extends React.Component {
         finishColumn,
         newStartColumn,
         newFinishColumn,
+        userId,
       });
       return;
     }
-    const column = columns[source.droppableId];
 
+    const column = columns[source.droppableId];
     const newTaskIds = [...column.taskIds];
     newTaskIds.splice(source.index, 1);
-    newTaskIds.splice(destination.index, 0, +draggableId);
+    newTaskIds.splice(destination.index, 0, draggableId);
+
     const newColumn = { ...column, taskIds: newTaskIds };
     moveTask({ column: newColumn });
-    fetchUpdateMoveTask({ column, newColumn });
+    fetchUpdateMoveTask({ column, newColumn, userId });
   };
 
   render() {

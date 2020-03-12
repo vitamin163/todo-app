@@ -4,6 +4,8 @@ export default {
   usersPath: () => [host, 'users.json'].join('/'),
   userPath: userId => [host, 'users', `${userId}.json`].join('/'),
   tasksPath: userId => [host, 'users', `${userId}`, 'tasks.json'].join('/'),
+  taskPath: (userId, taskId) =>
+    [host, 'users', `${userId}`, 'tasks', `${taskId}.json`].join('/'),
   columnsPath: userId => [host, 'users', `${userId}`, 'columns.json'].join('/'),
   columnPath: (userId, columnId) =>
     [host, 'users', `${userId}`, 'columns', `${columnId}.json`].join('/'),
