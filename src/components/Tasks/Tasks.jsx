@@ -7,6 +7,7 @@ import * as actions from '../../store/actions';
 import NewTaskForm from '../NewTaskForm/NewTaskForm';
 import Column from '../Column/Column';
 import classes from './Tasks.module.css';
+import getDestination from '../../utils';
 
 const mapStateToProps = state => {
   const props = {
@@ -54,12 +55,21 @@ class Tasks extends React.Component {
     if (destination.droppableId !== source.droppableId) {
       const startColumn = columns[source.droppableId];
       const finishColumn = columns[destination.droppableId];
-      const startTaskIds = [...startColumn.taskIds];
-      startTaskIds.splice(source.index, 1);
-      const newStartColumn = { ...startColumn, taskIds: startTaskIds };
-      const finishTaskIds = [...finishColumn.taskIds];
-      finishTaskIds.splice(destination.index, 0, draggableId);
-      const newFinishColumn = { ...finishColumn, taskIds: finishTaskIds };
+      // const startTaskIds = [...startColumn.taskIds];
+      // console.log(startTaskIds.indexOf(draggableId));
+      // console.log(source.index);
+      // startTaskIds.splice(source.index, 1);
+      // const newStartColumn = { ...startColumn, taskIds: startTaskIds };
+      // const finishTaskIds = [...finishColumn.taskIds];
+      // finishTaskIds.splice(destination.index, 0, draggableId);
+      // const newFinishColumn = { ...finishColumn, taskIds: finishTaskIds };
+      const { newStartColumn, newFinishColumn } = getDestination(
+        draggableId,
+        source.droppableId,
+        destination.droppableId,
+        columns,
+        destination.index
+      );
       moveTaskOtherColumn({ newStartColumn, newFinishColumn });
       fetchUpdateMoveTaskOtherColumn({
         startColumn,
@@ -88,6 +98,9 @@ class Tasks extends React.Component {
     }
     return (
       <>
+        <NavLink to="/taskList">
+          <Button variant="info">Показать список</Button>
+        </NavLink>
         <NewTaskForm />
         <DragDropContext onDragEnd={this.onDragEnd}>
           <div className={classes.TasksContainer}>

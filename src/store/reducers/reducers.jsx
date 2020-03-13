@@ -83,7 +83,14 @@ const users = handleActions(
       const updateTaskIds = [task.id, ...taskIds];
       const updateColumn1 = { ...column1, taskIds: updateTaskIds };
       const updateColumns = { ...state.columns, column1: updateColumn1 };
-      return { ...state, tasks: updateTasks, columns: updateColumns };
+      // const { taskList } = state;
+      // const updateTaskList = [...taskList, task.id];
+      return {
+        ...state,
+        tasks: updateTasks,
+        columns: updateColumns,
+        // taskList: updateTaskList,
+      };
     },
     [actions.removeTaskSuccess](state, { payload: { id, column } }) {
       const { columns } = state;
@@ -95,8 +102,11 @@ const users = handleActions(
       const updateTasks = { ..._.omit(tasks, id) };
       return { ...state, tasks: updateTasks, columns: updateColumns };
     },
+    [actions.sortTaskList](state, { payload: status }) {
+      return { ...state, status };
+    },
   },
-  {}
+  { status: 'all' }
 );
 const columnOrder = handleActions({}, ['column1', 'column2', 'column3']);
 export default combineReducers({

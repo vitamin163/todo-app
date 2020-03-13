@@ -6,6 +6,7 @@ import Auth from '../Auth/Auth';
 import Registration from '../Registration/Registration';
 import Logout from '../Logout/Logout';
 import classes from './App.module.css';
+import TaskList from '../TaskList/TaskList';
 
 const mapStateToProps = state => {
   const props = {
@@ -23,6 +24,7 @@ class App extends React.PureComponent {
           <>
             <Redirect to="/tasks" component={Tasks} />
             <Route path="/tasks" component={Tasks} />
+            <Route path="/taskList" component={TaskList} />
             <Route path="/logout" component={Logout} />
           </>
         </div>

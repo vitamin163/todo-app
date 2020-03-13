@@ -1,4 +1,5 @@
 import React from 'react';
+import _ from 'lodash';
 import { reduxForm, Field, SubmissionError } from 'redux-form';
 import { connect } from 'react-redux';
 import { Button, Form } from 'react-bootstrap';
@@ -10,6 +11,7 @@ const mapStateToProps = state => {
   const props = {
     column1: state.users.columns.column1,
     userId: state.auth.userId,
+    form: state.form,
   };
   return props;
 };
@@ -30,7 +32,7 @@ class NewTaskForm extends React.Component {
   };
 
   render() {
-    const { handleSubmit } = this.props;
+    const { handleSubmit, submitting, pristine } = this.props;
     return (
       <Form
         className={classes.NewTaskForm}
@@ -47,6 +49,7 @@ class NewTaskForm extends React.Component {
           className={classes.NewTaskFormButton}
           type="submit"
           variant="info"
+          disabled={pristine || submitting}
         >
           Add task
         </Button>

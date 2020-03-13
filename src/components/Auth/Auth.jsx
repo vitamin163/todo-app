@@ -30,7 +30,7 @@ class Auth extends React.Component {
   };
 
   render() {
-    const { handleSubmit } = this.props;
+    const { handleSubmit, submitting, pristine } = this.props;
 
     return (
       <div className={classes.AuthContainer}>
@@ -57,7 +57,12 @@ class Auth extends React.Component {
             />
           </Form.Group>
           <div className={classes.ButtonContainer}>
-            <Button onClick={this.handleLogin} variant="primary" type="submit">
+            <Button
+              disabled={submitting || pristine}
+              onClick={this.handleLogin}
+              variant="primary"
+              type="submit"
+            >
               Sign in
             </Button>
             <NavLink to="/registration">

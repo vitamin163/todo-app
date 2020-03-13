@@ -10,4 +10,5 @@ export default {
   columnPath: (userId, columnId) =>
     [host, 'users', `${userId}`, 'columns', `${columnId}.json`].join('/'),
   columnOrderPath: () => [host, 'columnOrder.json'].join('/'),
+  taskListPath: () => [host, 'users', 'taskId.json'],
 };

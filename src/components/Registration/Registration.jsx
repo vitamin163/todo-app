@@ -26,7 +26,7 @@ class Registration extends React.Component {
   };
 
   render() {
-    const { handleSubmit } = this.props;
+    const { handleSubmit, submitting, pristine } = this.props;
     return (
       <div className={classes.RegContainer}>
         <Form onSubmit={handleSubmit(this.submitHandler)}>
@@ -55,13 +55,17 @@ class Registration extends React.Component {
             <Form.Label>Confirm password</Form.Label>
             <Field
               name="confirm"
-              placeholder="Enter password"
+              placeholder="Confirm password"
               required
               component={Input}
               type="password"
             />
           </Form.Group>
-          <Button variant="primary" type="submit">
+          <Button
+            disabled={submitting || pristine}
+            variant="primary"
+            type="submit"
+          >
             Registration
           </Button>
         </Form>

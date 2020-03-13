@@ -1,0 +1,43 @@
+.TasksContainer{
+  display: flex;
+  flex-direction: column;
+  margin: 8px;
+  padding: 4px;
+  border: 1px solid lightgray;
+  border-radius: 4px;
+  width: 800px;
+
+}
+.Task {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-grow: 1;
+  margin: 4px;
+  border: 1px solid lightgray;
+  border-radius: 2px;
+  background-color: white;
+}
+
+.Content {
+  display: flex;
+  padding: 5px;
+  background-color: white;
+  border-right: 1px solid lightgray;;
+  width: 505px;
+}
+.ControlPanel {
+  display: flex;
+  justify-content: space-between;
+  width: 250px;
+  margin: 4px;
+  background-color: white;
+}
+
+.TitleSort {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 90px;
+  background-color: white;
+}

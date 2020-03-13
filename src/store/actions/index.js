@@ -1,4 +1,5 @@
 import { createAction } from 'redux-actions';
+import _ from 'lodash';
 import axios from 'axios';
 import { dbNewUser } from '../../templates/templates';
 import routes from '../../routes';
@@ -26,6 +27,7 @@ export const fetchTasksSuccess = createAction('TASKS_FETCH_SUCCESS');
 export const authSuccess = createAction('AUTH_SUCCESS');
 export const logout = createAction('LOGOUT');
 export const registrationSuccess = createAction('REGISTRATION_SUCCESS');
+export const sortTaskList = createAction('SORT_TASK_LIST');
 
 export const fetchUpdateMoveTask = ({
   column,
@@ -90,16 +92,39 @@ export const addTask = ({ task, column1, userId }) => async dispatch => {
   dispatch(addTaskSuccess({ task: updateTask }));
 };
 
-export const removeTask = ({ id, column, userId }) => async dispatch => {
+// export const removeTask = ({ id, column, userId }) => async dispatch => {
+//   dispatch(removeTaskRequest());
+//   try {
+//     const response1 = axios.patch(routes.columnPath(userId, column.id), {
+//       ...column,
+//     });
+//     const response2 = await axios.delete(routes.taskPath(userId, id));
+//     const [{ data: updateColumn }] = await Promise.all([response1, response2]);
+//     console.log(updateColumn);
+//     dispatch(removeTaskSuccess({ id, column: updateColumn }));
+//   } catch (e) {
+//     dispatch(removeTaskFailure());
+//     throw e;
+//   }
+// };
+
+export const removeTask = ({ taskId, column, userId }) => async dispatch => {
   dispatch(removeTaskRequest());
   try {
+    const { taskIds } = column;
+    const updateTaskIds = _.without(taskIds, taskId);
+    const updateColumn = { ...column, taskIds: updateTaskIds };
+
     const response1 = axios.patch(routes.columnPath(userId, column.id), {
-      ...column,
+      ...updateColumn,
     });
-    const response2 = await axios.delete(routes.taskPath(userId, id));
-    const [{ data: updateColumn }] = await Promise.all([response1, response2]);
+    const response2 = await axios.delete(routes.taskPath(userId, taskId));
+    const [{ data: responseColumn }] = await Promise.all([
+      response1,
+      response2,
+    ]);
     console.log(updateColumn);
-    dispatch(removeTaskSuccess({ id, column: updateColumn }));
+    dispatch(removeTaskSuccess({ id: taskId, column: responseColumn }));
   } catch (e) {
     dispatch(removeTaskFailure());
     throw e;
