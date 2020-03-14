@@ -24,6 +24,7 @@ export const removeTaskSuccess = createAction('REMOVE_TASK_SUCCESS');
 export const removeTaskFailure = createAction('REMOVE_TASK_FAILURE');
 export const fetchTasksRequest = createAction('TASKS_FETCH_REQUEST');
 export const fetchTasksSuccess = createAction('TASKS_FETCH_SUCCESS');
+export const fetchTasksFailure = createAction('TASKS_FETCH_FAILURE');
 export const authSuccess = createAction('AUTH_SUCCESS');
 export const logout = createAction('LOGOUT');
 export const registrationSuccess = createAction('REGISTRATION_SUCCESS');
@@ -41,7 +42,7 @@ export const fetchUpdateMoveTask = ({
     });
   } catch (e) {
     await dispatch(moveTaskFailure({ column }));
-    console.log('сервер не отвечает! fetchUpdateMoveTask');
+    console.log('сервер не отвечает!');
     throw e;
   }
 };
@@ -70,8 +71,8 @@ export const fetchUpdateMoveTaskOtherColumn = ({
     );
     await Promise.all([response1, response2]);
   } catch (e) {
-    await dispatch(moveTaskOtherColumnFailure({ startColumn, finishColumn })); // протестировать
-    console.log('сервер не отвечает! moveTaskOtherColumnFailure');
+    await dispatch(moveTaskOtherColumnFailure({ startColumn, finishColumn }));
+    console.log('сервер не отвечает!');
     throw e;
   }
 };
@@ -91,22 +92,6 @@ export const addTask = ({ task, column1, userId }) => async dispatch => {
   const updateTask = { ...task, id };
   dispatch(addTaskSuccess({ task: updateTask }));
 };
-
-// export const removeTask = ({ id, column, userId }) => async dispatch => {
-//   dispatch(removeTaskRequest());
-//   try {
-//     const response1 = axios.patch(routes.columnPath(userId, column.id), {
-//       ...column,
-//     });
-//     const response2 = await axios.delete(routes.taskPath(userId, id));
-//     const [{ data: updateColumn }] = await Promise.all([response1, response2]);
-//     console.log(updateColumn);
-//     dispatch(removeTaskSuccess({ id, column: updateColumn }));
-//   } catch (e) {
-//     dispatch(removeTaskFailure());
-//     throw e;
-//   }
-// };
 
 export const removeTask = ({ taskId, column, userId }) => async dispatch => {
   dispatch(removeTaskRequest());
@@ -132,7 +117,7 @@ export const removeTask = ({ taskId, column, userId }) => async dispatch => {
 };
 
 export const fetchTasks = userId => async dispatch => {
-  // dispatch(fetchTasksRequest());
+  dispatch(fetchTasksRequest());
   try {
     const response = await axios.get(routes.userPath(userId));
 
@@ -140,8 +125,8 @@ export const fetchTasks = userId => async dispatch => {
 
     dispatch(fetchTasksSuccess({ tasks, columns }));
   } catch (e) {
-    // dispatch(fetchTasksFailure());
-    console.log(e); // убрать
+    dispatch(fetchTasksFailure());
+    console.log(e);
     throw e;
   }
 };

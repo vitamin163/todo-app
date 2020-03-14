@@ -1,6 +1,5 @@
 import React from 'react';
 import { connect } from 'react-redux';
-// import _ from 'lodash';
 import { Draggable } from 'react-beautiful-dnd';
 import { Button } from 'react-bootstrap';
 import * as actions from '../../store/actions';

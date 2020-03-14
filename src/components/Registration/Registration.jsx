@@ -1,12 +1,26 @@
 import React from 'react';
-import { reduxForm, Field, SubmissionError } from 'redux-form';
+import {
+  reduxForm,
+  Field,
+  SubmissionError,
+  formValueSelector,
+} from 'redux-form';
 import { Button, Form } from 'react-bootstrap';
 import { connect } from 'react-redux';
+import { validateForm, vaidateEmail, validatePassword } from '../../utils';
 import classes from './Registration.module.css';
 import Input from '../Input/Input';
 import * as actions from '../../store/actions';
 
-const mapStateToProps = () => ({});
+const getFormData = formValueSelector('RegistrationForm');
+
+const mapStateToProps = state => {
+  const formValues = getFormData(state, 'email', 'password', 'confirm');
+  const props = {
+    formValues,
+  };
+  return props;
+};
 
 const actionCreators = {
   registration: actions.auth,
@@ -19,17 +33,26 @@ class Registration extends React.Component {
     try {
       await registration(email, password, 'registration');
     } catch (e) {
-      console.log('сервер не отвечает Registration');
+      console.log('сервер не отвечает');
       throw new SubmissionError({ _error: e.message });
     }
     reset();
   };
 
   render() {
-    const { handleSubmit, submitting, pristine } = this.props;
+    const { handleSubmit, submitting, pristine, formValues } = this.props;
+    const { email, password, confirm } = formValues;
+    const isValidEmail = vaidateEmail(email);
+    const isValidPassword = validatePassword(password);
+    const isConfirmed = password === confirm;
+    const isValidInputs = !isValidEmail && !isValidPassword && isConfirmed;
+    const isValidForms = validateForm(isValidInputs, email, password, confirm);
     return (
       <div className={classes.RegContainer}>
-        <Form onSubmit={handleSubmit(this.submitHandler)}>
+        <Form
+          validated={isValidForms}
+          onSubmit={handleSubmit(this.submitHandler)}
+        >
           <Form.Group controlId="formBasicEmail">
             <Form.Label>Email address</Form.Label>
             <Field
@@ -38,6 +61,7 @@ class Registration extends React.Component {
               required
               component={Input}
               type="email"
+              isInvalid={isValidEmail}
             />
           </Form.Group>
 
@@ -49,9 +73,10 @@ class Registration extends React.Component {
               required
               component={Input}
               type="password"
+              isInvalid={isValidPassword}
             />
           </Form.Group>
-          <Form.Group controlId="formBasicPassword">
+          <Form.Group controlId="formBasicConfirmPassword">
             <Form.Label>Confirm password</Form.Label>
             <Field
               name="confirm"
@@ -59,10 +84,11 @@ class Registration extends React.Component {
               required
               component={Input}
               type="password"
+              isInvalid={!isConfirmed}
             />
           </Form.Group>
           <Button
-            disabled={submitting || pristine}
+            disabled={submitting || pristine || !isValidForms}
             variant="primary"
             type="submit"
           >
@@ -74,11 +100,11 @@ class Registration extends React.Component {
   }
 }
 
-const ConnectedAuthForm = connect(
+export default connect(
   mapStateToProps,
   actionCreators
-)(Registration);
-
-export default reduxForm({
-  form: 'RegistrationForm',
-})(ConnectedAuthForm);
+)(
+  reduxForm({
+    form: 'RegistrationForm',
+  })(Registration)
+);

@@ -31,7 +31,7 @@ class App extends React.PureComponent {
       );
     }
     return (
-      <div className={classes.App}>
+      <div className={classes.Auth}>
         <Switch>
           <Route exact path="/" component={Auth} />
           <Route path="/registration" component={Registration} />

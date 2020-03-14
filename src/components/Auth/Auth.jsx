@@ -1,14 +1,23 @@
 import React from 'react';
-import { reduxForm, Field, SubmissionError } from 'redux-form';
+import {
+  reduxForm,
+  Field,
+  SubmissionError,
+  formValueSelector,
+} from 'redux-form';
 import { Button, Form } from 'react-bootstrap';
 import { connect } from 'react-redux';
 import { NavLink } from 'react-router-dom';
 import classes from './Auth.module.css';
 import Input from '../Input/Input';
 import * as actions from '../../store/actions';
+import { validateForm, vaidateEmail, validatePassword } from '../../utils';
+
+const getFormData = formValueSelector('authForm');
 
 const mapStateToProps = state => ({
   userId: state.auth.userId,
+  formValues: getFormData(state, 'email', 'password'),
 });
 
 const actionCreators = {
@@ -23,18 +32,25 @@ class Auth extends React.Component {
       await login(email, password, 'login');
     } catch (e) {
       console.log(e);
-      console.log('Ошибка доступа Auth');
+      console.log('Ошибка доступа');
       throw new SubmissionError({ _error: e.message });
     }
     reset();
   };
 
   render() {
-    const { handleSubmit, submitting, pristine } = this.props;
-
+    const { handleSubmit, submitting, pristine, formValues } = this.props;
+    const { email, password } = formValues;
+    const isValidEmail = vaidateEmail(email);
+    const isValidPassword = validatePassword(password);
+    const isValidInputs = !isValidEmail && !isValidPassword;
+    const isValidForms = validateForm(isValidInputs, email, password);
     return (
       <div className={classes.AuthContainer}>
-        <Form onSubmit={handleSubmit(this.submitHandler)}>
+        <Form
+          validated={isValidForms}
+          onSubmit={handleSubmit(this.submitHandler)}
+        >
           <Form.Group controlId="formBasicEmail">
             <Form.Label>Email address</Form.Label>
             <Field
@@ -43,6 +59,7 @@ class Auth extends React.Component {
               required
               component={Input}
               type="email"
+              isInvalid={isValidEmail}
             />
           </Form.Group>
 
@@ -54,11 +71,12 @@ class Auth extends React.Component {
               required
               component={Input}
               type="password"
+              isInvalid={isValidPassword}
             />
           </Form.Group>
           <div className={classes.ButtonContainer}>
             <Button
-              disabled={submitting || pristine}
+              disabled={submitting || pristine || !isValidForms}
               onClick={this.handleLogin}
               variant="primary"
               type="submit"

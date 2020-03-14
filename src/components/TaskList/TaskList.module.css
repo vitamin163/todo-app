@@ -1,3 +1,19 @@
+.MainContainer {
+  display: flex;
+  flex-direction: column;
+  margin-top: 8px;
+}
+
+.Header {
+  display: flex;
+  margin-right: 8px;
+  justify-content: space-between;
+}
+
+.Footer{
+  margin-bottom: 8px;
+}
+
 .TasksContainer{
   display: flex;
   flex-direction: column;
@@ -5,7 +21,7 @@
   padding: 4px;
   border: 1px solid lightgray;
   border-radius: 4px;
-  width: 800px;
+  width: 1000px;
 
 }
 .Task {
@@ -24,7 +40,7 @@
   padding: 5px;
   background-color: white;
   border-right: 1px solid lightgray;;
-  width: 505px;
+  width: 750px;
 }
 .ControlPanel {
   display: flex;

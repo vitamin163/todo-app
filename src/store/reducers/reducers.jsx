@@ -83,13 +83,10 @@ const users = handleActions(
       const updateTaskIds = [task.id, ...taskIds];
       const updateColumn1 = { ...column1, taskIds: updateTaskIds };
       const updateColumns = { ...state.columns, column1: updateColumn1 };
-      // const { taskList } = state;
-      // const updateTaskList = [...taskList, task.id];
       return {
         ...state,
         tasks: updateTasks,
         columns: updateColumns,
-        // taskList: updateTaskList,
       };
     },
     [actions.removeTaskSuccess](state, { payload: { id, column } }) {

@@ -1,17 +1,16 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { Button, DropdownButton, Dropdown } from 'react-bootstrap';
-// import { NavLink } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 import * as actions from '../../store/actions';
 import NewTaskForm from '../NewTaskForm/NewTaskForm';
 import classes from './TaskList.module.css';
-import getDestination from '../../utils';
+import { getDestination } from '../../utils';
 
 const mapStateToProps = state => {
   const props = {
     tasks: state.users.tasks,
     columns: state.users.columns,
-    columnOrder: state.columnOrder,
     userId: state.auth.userId,
     status: state.users.status,
   };
@@ -19,9 +18,7 @@ const mapStateToProps = state => {
 };
 
 const actionCreators = {
-  moveTask: actions.moveTask,
   moveTaskOtherColumn: actions.moveTaskOtherColumn,
-  fetchUpdateMoveTask: actions.fetchUpdateMoveTask,
   fetchUpdateMoveTaskOtherColumn: actions.fetchUpdateMoveTaskOtherColumn,
   fetchTasks: actions.fetchTasks,
   removeTask: actions.removeTask,
@@ -140,23 +137,38 @@ class TaskList extends React.Component {
 
     return (
       <>
-        <NewTaskForm />
-        <DropdownButton id="dropdown-item-button" title="Sort list">
-          <Dropdown.Item as="button" onClick={this.sortHandler('all')}>
-            All tasks
-          </Dropdown.Item>
-          <Dropdown.Item as="button" onClick={this.sortHandler('toDo')}>
-            ToDO
-          </Dropdown.Item>
-          <Dropdown.Item as="button" onClick={this.sortHandler('inProgress')}>
-            In progress
-          </Dropdown.Item>
-          <Dropdown.Item as="button" onClick={this.sortHandler('done')}>
-            Done
-          </Dropdown.Item>
-        </DropdownButton>
-        <div className={classes.TasksContainer}>
-          {this.renderTaskList(tasks, routeSort[status])}
+        <div className={classes.MainContainer}>
+          <div className={classes.Header}>
+            <NewTaskForm />
+            <DropdownButton id="dropdown-item-button" title="Sort list">
+              <Dropdown.Item as="button" onClick={this.sortHandler('all')}>
+                All tasks
+              </Dropdown.Item>
+              <Dropdown.Item as="button" onClick={this.sortHandler('toDo')}>
+                ToDO
+              </Dropdown.Item>
+              <Dropdown.Item
+                as="button"
+                onClick={this.sortHandler('inProgress')}
+              >
+                In progress
+              </Dropdown.Item>
+              <Dropdown.Item as="button" onClick={this.sortHandler('done')}>
+                Done
+              </Dropdown.Item>
+            </DropdownButton>
+            <NavLink to="/tasks">
+              <Button variant="info">Show table</Button>
+            </NavLink>
+          </div>
+          <div className={classes.TasksContainer}>
+            {this.renderTaskList(tasks, routeSort[status])}
+          </div>
+        </div>
+        <div className={classes.Footer}>
+          <NavLink to="/logout">
+            <Button variant="info">Logout</Button>
+          </NavLink>
         </div>
       </>
     );

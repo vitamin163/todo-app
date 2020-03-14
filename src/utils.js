@@ -1,4 +1,6 @@
-export default (
+import isEmail from 'validator/es/lib/isEmail';
+
+export const getDestination = (
   taskId,
   startColumnId,
   finishColumnId,
@@ -16,3 +18,28 @@ export default (
   const newFinishColumn = { ...finishColumn, taskIds: finishTaskIds };
   return { newStartColumn, newFinishColumn };
 };
+
+export const validateForm = (
+  isValidInputs,
+  email,
+  password,
+  confirm = 'empty'
+) => {
+  if (!email || !password || !confirm) {
+    return false;
+  }
+  return isValidInputs;
+};
+/* eslint-disable consistent-return */
+export const vaidateEmail = email => {
+  if (!email) return;
+  const isValid = isEmail(String(email));
+  return !isValid;
+};
+
+export const validatePassword = password => {
+  if (!password) return;
+  const isValid = password.length < 6;
+  return isValid;
+};
+/* eslint-enable */

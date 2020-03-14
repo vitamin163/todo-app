@@ -1,5 +1,4 @@
 import React from 'react';
-import _ from 'lodash';
 import { reduxForm, Field, SubmissionError } from 'redux-form';
 import { connect } from 'react-redux';
 import { Button, Form } from 'react-bootstrap';
@@ -25,7 +24,7 @@ class NewTaskForm extends React.Component {
     try {
       await addTask({ task, column1, userId });
     } catch (e) {
-      console.log('сервер не отвеает NewTaskForm');
+      console.log('сервер не отвеает');
       throw new SubmissionError({ _error: e.message });
     }
     reset();
