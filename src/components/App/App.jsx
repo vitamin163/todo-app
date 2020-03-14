@@ -7,6 +7,7 @@ import Registration from '../Registration/Registration';
 import Logout from '../Logout/Logout';
 import classes from './App.module.css';
 import TaskList from '../TaskList/TaskList';
+import * as actions from '../../store/actions';
 
 const mapStateToProps = state => {
   const props = {
@@ -15,7 +16,16 @@ const mapStateToProps = state => {
   return props;
 };
 
+const actionCreators = {
+  autoLogin: actions.autoLogin,
+};
+
 class App extends React.PureComponent {
+  componentDidMount() {
+    const { autoLogin } = this.props;
+    autoLogin();
+  }
+
   render() {
     const { isAuthenticated } = this.props;
     if (isAuthenticated) {
@@ -42,4 +52,4 @@ class App extends React.PureComponent {
   }
 }
 
-export default withRouter(connect(mapStateToProps)(App));
+export default withRouter(connect(mapStateToProps, actionCreators)(App));

@@ -14,6 +14,7 @@ const auth = handleActions(
       localStorage.removeItem('token');
       localStorage.removeItem('userId');
       localStorage.removeItem('expirationDate');
+      localStorage.removeItem('email');
       return { ...state, token: null, email: null, userId: null };
     },
   },
