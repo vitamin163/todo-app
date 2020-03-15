@@ -48,54 +48,59 @@ class Registration extends React.Component {
     const isValidInputs = !isValidEmail && !isValidPassword && isConfirmed;
     const isValidForms = validateForm(isValidInputs, email, password, confirm);
     return (
-      <div className={classes.RegContainer}>
-        <Form
-          validated={isValidForms}
-          onSubmit={handleSubmit(this.submitHandler)}
-        >
-          <Form.Group controlId="formBasicEmail">
-            <Form.Label>Email address</Form.Label>
-            <Field
-              name="email"
-              placeholder="Enter email"
-              required
-              component={Input}
-              type="email"
-              isInvalid={isValidEmail}
-            />
-          </Form.Group>
-
-          <Form.Group controlId="formBasicPassword">
-            <Form.Label>Password</Form.Label>
-            <Field
-              name="password"
-              placeholder="Enter password"
-              required
-              component={Input}
-              type="password"
-              isInvalid={isValidPassword}
-            />
-          </Form.Group>
-          <Form.Group controlId="formBasicConfirmPassword">
-            <Form.Label>Confirm password</Form.Label>
-            <Field
-              name="confirm"
-              placeholder="Confirm password"
-              required
-              component={Input}
-              type="password"
-              isInvalid={!isConfirmed}
-            />
-          </Form.Group>
-          <Button
-            disabled={submitting || pristine || !isValidForms}
-            variant="primary"
-            type="submit"
+      <>
+        <div className={classes.PageName}>
+          <h2>Registration</h2>
+        </div>
+        <div className={classes.RegContainer}>
+          <Form
+            validated={isValidForms}
+            onSubmit={handleSubmit(this.submitHandler)}
           >
-            Registration
-          </Button>
-        </Form>
-      </div>
+            <Form.Group controlId="formBasicEmail">
+              <Form.Label>Email address</Form.Label>
+              <Field
+                name="email"
+                placeholder="Enter email"
+                required
+                component={Input}
+                type="email"
+                isInvalid={isValidEmail}
+              />
+            </Form.Group>
+
+            <Form.Group controlId="formBasicPassword">
+              <Form.Label>Password</Form.Label>
+              <Field
+                name="password"
+                placeholder="Enter password"
+                required
+                component={Input}
+                type="password"
+                isInvalid={isValidPassword}
+              />
+            </Form.Group>
+            <Form.Group controlId="formBasicConfirmPassword">
+              <Form.Label>Confirm password</Form.Label>
+              <Field
+                name="confirm"
+                placeholder="Confirm password"
+                required
+                component={Input}
+                type="password"
+                isInvalid={!isConfirmed}
+              />
+            </Form.Group>
+            <Button
+              disabled={submitting || pristine || !isValidForms}
+              variant="primary"
+              type="submit"
+            >
+              Registration
+            </Button>
+          </Form>
+        </div>
+      </>
     );
   }
 }

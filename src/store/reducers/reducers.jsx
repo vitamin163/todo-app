@@ -5,6 +5,21 @@ import { reducer as formReducer } from 'redux-form';
 import * as actions from '../actions';
 import { newUser } from '../../templates/templates';
 
+const ui = handleActions(
+  {
+    [actions.removeTaskRequest](state) {
+      return { ...state, removeStatus: true };
+    },
+    [actions.removeTaskSuccess](state) {
+      return { ...state, removeStatus: false };
+    },
+    [actions.removeTaskFailure](state) {
+      return { ...state, removeStatus: false };
+    },
+  },
+  { removeStatus: false }
+);
+
 const auth = handleActions(
   {
     [actions.authSuccess](state, { payload: { token, email, userId } }) {
@@ -112,4 +127,5 @@ export default combineReducers({
   columnOrder,
   form: formReducer,
   auth,
+  ui,
 });

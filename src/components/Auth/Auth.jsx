@@ -46,49 +46,59 @@ class Auth extends React.Component {
     const isValidInputs = !isValidEmail && !isValidPassword;
     const isValidForms = validateForm(isValidInputs, email, password);
     return (
-      <div className={classes.AuthContainer}>
-        <Form
-          validated={isValidForms}
-          onSubmit={handleSubmit(this.submitHandler)}
-        >
-          <Form.Group controlId="formBasicEmail">
-            <Form.Label>Email address</Form.Label>
-            <Field
-              name="email"
-              placeholder="Enter email"
-              required
-              component={Input}
-              type="email"
-              isInvalid={isValidEmail}
-            />
-          </Form.Group>
+      <>
+        <div className={classes.AppName}>
+          <strong>
+            <h1>ToDo</h1>
+          </strong>
+        </div>
+        <div className={classes.PageName}>
+          <h2>Authorization</h2>
+        </div>
+        <div className={classes.AuthContainer}>
+          <Form
+            validated={isValidForms}
+            onSubmit={handleSubmit(this.submitHandler)}
+          >
+            <Form.Group controlId="formBasicEmail">
+              <Form.Label>Email address</Form.Label>
+              <Field
+                name="email"
+                placeholder="Enter email"
+                required
+                component={Input}
+                type="email"
+                isInvalid={isValidEmail}
+              />
+            </Form.Group>
 
-          <Form.Group controlId="formBasicPassword">
-            <Form.Label>Password</Form.Label>
-            <Field
-              name="password"
-              placeholder="Enter password"
-              required
-              component={Input}
-              type="password"
-              isInvalid={isValidPassword}
-            />
-          </Form.Group>
-          <div className={classes.ButtonContainer}>
-            <Button
-              disabled={submitting || pristine || !isValidForms}
-              onClick={this.handleLogin}
-              variant="primary"
-              type="submit"
-            >
-              Sign in
-            </Button>
-            <NavLink to="/registration">
-              <Button variant="primary">Registration</Button>
-            </NavLink>
-          </div>
-        </Form>
-      </div>
+            <Form.Group controlId="formBasicPassword">
+              <Form.Label>Password</Form.Label>
+              <Field
+                name="password"
+                placeholder="Enter password"
+                required
+                component={Input}
+                type="password"
+                isInvalid={isValidPassword}
+              />
+            </Form.Group>
+            <div className={classes.ButtonContainer}>
+              <Button
+                disabled={submitting || pristine || !isValidForms}
+                onClick={this.handleLogin}
+                variant="primary"
+                type="submit"
+              >
+                Sign in
+              </Button>
+              <NavLink to="/registration">
+                <Button variant="primary">Registration</Button>
+              </NavLink>
+            </div>
+          </Form>
+        </div>
+      </>
     );
   }
 }

@@ -7,9 +7,18 @@
   border-radius: 5px;
   height: 250px;
   width: 500px;
+  margin-bottom: 150px;
 }
 
 .ButtonContainer{
   display: flex;
   justify-content: space-between;
+}
+
+.AppName {
+  margin-bottom: 30px;
+}
+
+.PageName{
+  margin-bottom: 10px;
 }

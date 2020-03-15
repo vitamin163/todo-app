@@ -1,14 +1,15 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { Draggable } from 'react-beautiful-dnd';
-import { Button } from 'react-bootstrap';
 import * as actions from '../../store/actions';
 import classes from './Task.module.css';
+import ButtonRemove from '../ButtonRemove/ButtonRemove';
 
 const mapStateToProps = state => {
   const props = {
     userId: state.auth.userId,
     columns: state.users.columns,
+    ui: state.ui,
   };
   return props;
 };
@@ -33,13 +34,7 @@ class Task extends React.Component {
             ref={provided.innerRef}
           >
             {task.content}
-            <Button
-              variant="secondary"
-              onClick={this.handleRemove(task.id, column)}
-              type="button"
-            >
-              &times;
-            </Button>
+            <ButtonRemove onClick={this.handleRemove(task.id, column)} />
           </div>
         )}
       </Draggable>

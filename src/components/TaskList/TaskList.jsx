@@ -6,6 +6,7 @@ import * as actions from '../../store/actions';
 import NewTaskForm from '../NewTaskForm/NewTaskForm';
 import classes from './TaskList.module.css';
 import { getDestination } from '../../utils';
+import ButtonRemove from '../ButtonRemove/ButtonRemove';
 
 const mapStateToProps = state => {
   const props = {
@@ -91,14 +92,7 @@ class TaskList extends React.Component {
               Done
             </Dropdown.Item>
           </DropdownButton>
-          <Button
-            size="sm"
-            variant="secondary"
-            onClick={this.handleRemove(id, columnId)}
-            type="button"
-          >
-            &times;
-          </Button>
+          <ButtonRemove onClick={this.handleRemove(id, columnId)} />
         </div>
       </div>
     ));
