@@ -1,7 +1,16 @@
 .NewTaskForm {
+  display: flex;
+  flex-direction: column;
   margin-left: 8px;
+
 }
 
-.NewTaskFormButton {
-  margin-left: 8px;
+.ControlPanel {
+  display: flex;
+  justify-content: space-between;
+  width: 350px;
+}
+
+.Error {
+  margin-top: 10px;
 }

@@ -1,7 +1,7 @@
 import React from 'react';
 import { reduxForm, Field, SubmissionError } from 'redux-form';
 import { connect } from 'react-redux';
-import { Button, Form } from 'react-bootstrap';
+import { Button, Form, Alert } from 'react-bootstrap';
 import * as actions from '../../store/actions';
 import Input from '../Input/Input';
 import classes from './NewTaskForm.module.css';
@@ -24,35 +24,36 @@ class NewTaskForm extends React.Component {
     try {
       await addTask({ task, column1, userId });
     } catch (e) {
-      console.log('сервер не отвеает');
       throw new SubmissionError({ _error: e.message });
     }
     reset();
   };
 
   render() {
-    const { handleSubmit, submitting, pristine } = this.props;
+    const { handleSubmit, submitting, pristine, error } = this.props;
     return (
-      <Form
-        className={classes.NewTaskForm}
-        onSubmit={handleSubmit(this.handleSubmit)}
-        inline
-      >
-        <Field
-          name="content"
-          type="text"
-          component={Input}
-          placeholder="add task"
-        />
-        <Button
-          className={classes.NewTaskFormButton}
-          type="submit"
-          variant="info"
-          disabled={pristine || submitting}
-        >
-          Add task
-        </Button>
-      </Form>
+      <div className={classes.NewTaskForm}>
+        <Form onSubmit={handleSubmit(this.handleSubmit)} inline>
+          <div className={classes.ControlPanel}>
+            <Field
+              name="content"
+              type="text"
+              component={Input}
+              placeholder="add task"
+            />
+            <Button
+              type="submit"
+              variant="info"
+              disabled={pristine || submitting}
+            >
+              Add task
+            </Button>
+          </div>
+        </Form>
+        <div className={classes.Error}>
+          {error && <Alert variant="danger">{error}</Alert>}
+        </div>
+      </div>
     );
   }
 }
