@@ -43,3 +43,11 @@ export const validatePassword = password => {
   return isValid;
 };
 /* eslint-enable */
+
+export const parseErrors = (errorPart1, errorPart2) => {
+  const errorMessage1 = errorPart1.errors.response
+    ? errorPart1.errors.response.data.error.message.split('_').join(' ')
+    : '';
+  const errorMessage2 = errorPart2.message;
+  return errorMessage1 ? ` ${errorMessage1}. ${errorMessage2}` : errorMessage2;
+};

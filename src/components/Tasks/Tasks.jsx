@@ -8,6 +8,7 @@ import NewTaskForm from '../NewTaskForm/NewTaskForm';
 import Column from '../Column/Column';
 import classes from './Tasks.module.css';
 import { getDestination } from '../../utils';
+import ErrorAlert from '../ErrorAlert/ErrorAlert';
 
 const mapStateToProps = state => {
   const props = {
@@ -15,6 +16,7 @@ const mapStateToProps = state => {
     columns: state.users.columns,
     columnOrder: state.columnOrder,
     userId: state.auth.userId,
+    ui: state.ui,
   };
   return props;
 };
@@ -84,37 +86,64 @@ class Tasks extends React.Component {
   };
 
   render() {
-    const { tasks, columns, columnOrder } = this.props;
-    if (!tasks) {
+    const { tasks, columns, columnOrder, ui } = this.props;
+    if (ui.fetchTasksState === 'request') {
       return <Spinner animation="grow" variant="dark" />;
     }
-    return (
-      <>
-        <div className={classes.TasksContainer}>
-          <div className={classes.ControlPanel}>
-            <NewTaskForm />
-            <NavLink to="/taskList">
-              <Button variant="info">Show list</Button>
+
+    if (ui.fetchTasksState === 'success') {
+      return (
+        <>
+          <div className={classes.TasksContainer}>
+            <div className={classes.ControlPanel}>
+              <NewTaskForm />
+              <NavLink to="/taskList">
+                <Button variant="info">Show list</Button>
+              </NavLink>
+            </div>
+            <div className={classes.Tasks}>
+              <DragDropContext onDragEnd={this.onDragEnd}>
+                {columnOrder.map(columnId => {
+                  const column = columns[columnId];
+                  const columnTasks = column.taskIds.map(
+                    taskId => tasks[taskId]
+                  );
+                  return (
+                    <Column
+                      key={column.id}
+                      column={column}
+                      tasks={columnTasks}
+                    />
+                  );
+                })}
+              </DragDropContext>
+            </div>
+            <div className={classes.Error}>
+              {ui.removeState === 'failure' && (
+                <ErrorAlert processName="removeState">{`Fail remove. ${ui.removeError}`}</ErrorAlert>
+              )}
+              {ui.moveTaskState === 'failure' && (
+                <ErrorAlert processName="moveTaskState">{`Fail move. ${ui.moveTaskError}`}</ErrorAlert>
+              )}
+              {ui.moveTaskOtherColumnState === 'failure' && (
+                <ErrorAlert processName="moveTaskOtherColumnState">{`Fail move. ${ui.moveTaskOtherColumnError}`}</ErrorAlert>
+              )}
+            </div>
+          </div>
+          <div className={classes.Footer}>
+            <NavLink to="/logout">
+              <Button variant="info">Logout</Button>
             </NavLink>
           </div>
-          <div className={classes.Tasks}>
-            <DragDropContext onDragEnd={this.onDragEnd}>
-              {columnOrder.map(columnId => {
-                const column = columns[columnId];
-                const columnTasks = column.taskIds.map(taskId => tasks[taskId]);
-                return (
-                  <Column key={column.id} column={column} tasks={columnTasks} />
-                );
-              })}
-            </DragDropContext>
-          </div>
+        </>
+      );
+    }
+    return (
+      ui.fetchTasksState === 'failure' && (
+        <div className={classes.Error}>
+          <ErrorAlert processName="fetchTasksState">{`Fail load tasks. Try refresh page. ${ui.fetchTasksError}`}</ErrorAlert>
         </div>
-        <div className={classes.Footer}>
-          <NavLink to="/logout">
-            <Button variant="info">Logout</Button>
-          </NavLink>
-        </div>
-      </>
+      )
     );
   }
 }

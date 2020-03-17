@@ -5,6 +5,7 @@ import { dbNewUser } from '../../templates/templates';
 import routes from '../../routes';
 
 export const addTaskSuccess = createAction('TASK_ADD_SUCCESS');
+export const addTaskFailure = createAction('TASK_ADD_FAILURE');
 export const moveTask = createAction('MOVE_TASK');
 export const moveTaskRequest = createAction('MOVE_TASK_REQUEST');
 export const moveTaskSuccess = createAction('MOVE_TASK_SUCCESS');
@@ -26,9 +27,12 @@ export const fetchTasksRequest = createAction('TASKS_FETCH_REQUEST');
 export const fetchTasksSuccess = createAction('TASKS_FETCH_SUCCESS');
 export const fetchTasksFailure = createAction('TASKS_FETCH_FAILURE');
 export const authSuccess = createAction('AUTH_SUCCESS');
+export const authFailure = createAction('AUTH_FAILURE');
 export const logout = createAction('LOGOUT');
 export const registrationSuccess = createAction('REGISTRATION_SUCCESS');
+export const registrationFailure = createAction('REGISTRATION_FAILURE');
 export const sortTaskList = createAction('SORT_TASK_LIST');
+export const closeErrorAlert = createAction('CLOSE_ERROR_ALERT');
 
 export const fetchUpdateMoveTask = ({
   column,
@@ -40,10 +44,9 @@ export const fetchUpdateMoveTask = ({
     await axios.patch(routes.columnPath(userId, newColumn.id), {
       ...newColumn,
     });
-  } catch (e) {
-    await dispatch(moveTaskFailure({ column }));
-    console.log('сервер не отвечает!');
-    throw e;
+  } catch (error) {
+    dispatch(moveTaskFailure({ column, error: error.message }));
+    throw error;
   }
 };
 
@@ -70,10 +73,15 @@ export const fetchUpdateMoveTaskOtherColumn = ({
       }
     );
     await Promise.all([response1, response2]);
-  } catch (e) {
-    await dispatch(moveTaskOtherColumnFailure({ startColumn, finishColumn }));
-    console.log('сервер не отвечает!');
-    throw e;
+  } catch (error) {
+    await dispatch(
+      moveTaskOtherColumnFailure({
+        startColumn,
+        finishColumn,
+        error: error.message,
+      })
+    );
+    throw error;
   }
 };
 
@@ -85,7 +93,6 @@ export const addTask = ({ task, column1, userId }) => async dispatch => {
   const { name: id } = responseTask.data;
   const newTaskIds = [id, ...column1.taskIds];
   const newColumn1 = { ...column1, taskIds: newTaskIds };
-  console.log(newColumn1);
   await axios.patch(routes.columnPath(userId, column1.id), {
     ...newColumn1,
   });
@@ -108,10 +115,9 @@ export const removeTask = ({ taskId, column, userId }) => async dispatch => {
       response1,
       response2,
     ]);
-    console.log(updateColumn);
     dispatch(removeTaskSuccess({ id: taskId, column: responseColumn }));
   } catch (e) {
-    dispatch(removeTaskFailure());
+    dispatch(removeTaskFailure(e.message));
     throw e;
   }
 };
@@ -120,13 +126,10 @@ export const fetchTasks = userId => async dispatch => {
   dispatch(fetchTasksRequest());
   try {
     const response = await axios.get(routes.userPath(userId));
-
     const { tasks, columns } = response.data;
-
     dispatch(fetchTasksSuccess({ tasks, columns }));
   } catch (e) {
-    dispatch(fetchTasksFailure());
-    console.log(e);
+    dispatch(fetchTasksFailure(e.message));
     throw e;
   }
 };
@@ -155,11 +158,7 @@ export const auth = (email, password, process) => async dispatch => {
   const { email: responseEmail, localId, idToken, expiresIn } = response.data;
 
   if (process === 'registration') {
-    const regResponse = await axios.patch(
-      routes.userPath(localId),
-      dbNewUser(responseEmail)
-    );
-    console.log(regResponse.data);
+    await axios.patch(routes.userPath(localId), dbNewUser(responseEmail));
     dispatch(registrationSuccess({ email: responseEmail }));
   }
 

@@ -8,16 +8,65 @@ import { newUser } from '../../templates/templates';
 const ui = handleActions(
   {
     [actions.removeTaskRequest](state) {
-      return { ...state, removeStatus: true };
+      return { ...state, removeState: 'request' };
     },
     [actions.removeTaskSuccess](state) {
-      return { ...state, removeStatus: false };
+      return { ...state, removeState: 'success' };
     },
-    [actions.removeTaskFailure](state) {
-      return { ...state, removeStatus: false };
+    [actions.removeTaskFailure](state, { payload: error }) {
+      return { ...state, removeState: 'failure', removeError: error };
+    },
+    [actions.moveTaskRequest](state) {
+      return { ...state, moveTaskState: 'request' };
+    },
+    [actions.moveTaskFailure](state, { payload: { error } }) {
+      return { ...state, moveTaskState: 'failure', moveTaskError: error };
+    },
+    [actions.moveTaskOtherColumnRequest](state) {
+      return { ...state, moveTaskOtherColumnState: 'request' };
+    },
+    [actions.moveTaskOtherColumnFailure](state, { payload: { error } }) {
+      return {
+        ...state,
+        moveTaskOtherColumnState: 'failure',
+        moveTaskOtherColumnError: error,
+      };
+    },
+    [actions.addTaskFailure](state) {
+      return { ...state, addTaskState: 'failure' };
+    },
+    [actions.registrationFailure](state) {
+      return { ...state, registrationState: 'failure' };
+    },
+    [actions.authFailure](state) {
+      return { ...state, authState: 'failure' };
+    },
+    [actions.fetchTasksRequest](state) {
+      return { ...state, fetchTasksState: 'request' };
+    },
+    [actions.fetchTasksSuccess](state) {
+      return { ...state, fetchTasksState: 'success' };
+    },
+    [actions.fetchTasksFailure](state, { payload: error }) {
+      return { ...state, fetchTasksState: 'failure', fetchTasksError: error };
+    },
+    [actions.closeErrorAlert](state, { payload: process }) {
+      return { ...state, [process]: 'init' };
     },
   },
-  { removeStatus: false }
+  {
+    removeState: 'init',
+    removeError: null,
+    moveTaskState: 'init',
+    moveTaskError: null,
+    addTaskState: 'init',
+    registrationState: 'init',
+    authState: 'init',
+    moveTaskOtherColumnError: null,
+    moveTaskOtherColumnState: 'init',
+    fetchTasksState: 'init',
+    fetchTasksError: null,
+  }
 );
 
 const auth = handleActions(
@@ -115,11 +164,11 @@ const users = handleActions(
       const updateTasks = { ..._.omit(tasks, id) };
       return { ...state, tasks: updateTasks, columns: updateColumns };
     },
-    [actions.sortTaskList](state, { payload: status }) {
-      return { ...state, status };
+    [actions.sortTaskList](state, { payload: show }) {
+      return { ...state, show };
     },
   },
-  { status: 'all' }
+  { show: 'all' }
 );
 const columnOrder = handleActions({}, ['column1', 'column2', 'column3']);
 export default combineReducers({

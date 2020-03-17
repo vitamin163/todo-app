@@ -7,13 +7,15 @@ import NewTaskForm from '../NewTaskForm/NewTaskForm';
 import classes from './TaskList.module.css';
 import { getDestination } from '../../utils';
 import ButtonRemove from '../ButtonRemove/ButtonRemove';
+import ErrorAlert from '../ErrorAlert/ErrorAlert';
 
 const mapStateToProps = state => {
   const props = {
     tasks: state.users.tasks,
     columns: state.users.columns,
     userId: state.auth.userId,
-    status: state.users.status,
+    show: state.users.show,
+    ui: state.ui,
   };
   return props;
 };
@@ -99,7 +101,7 @@ class TaskList extends React.Component {
   };
 
   render() {
-    const { tasks, columns, status } = this.props;
+    const { tasks, columns, show, ui } = this.props;
     const {
       column1: { taskIds: taskIds1 },
       column2: { taskIds: taskIds2 },
@@ -156,7 +158,15 @@ class TaskList extends React.Component {
             </NavLink>
           </div>
           <div className={classes.TasksContainer}>
-            {this.renderTaskList(tasks, routeSort[status])}
+            {this.renderTaskList(tasks, routeSort[show])}
+          </div>
+          <div className={classes.Error}>
+            {ui.removeState === 'failure' && (
+              <ErrorAlert processName="removeState">{`Fail remove. ${ui.removeError}`}</ErrorAlert>
+            )}
+            {ui.moveTaskOtherColumnState === 'failure' && (
+              <ErrorAlert processName="moveTaskOtherColumnState">{`Fail move. ${ui.moveTaskOtherColumnError}`}</ErrorAlert>
+            )}
           </div>
         </div>
         <div className={classes.Footer}>

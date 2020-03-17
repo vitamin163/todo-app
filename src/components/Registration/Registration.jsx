@@ -5,12 +5,18 @@ import {
   SubmissionError,
   formValueSelector,
 } from 'redux-form';
-import { Button, Form } from 'react-bootstrap';
+import { Button, Form, Spinner } from 'react-bootstrap';
 import { connect } from 'react-redux';
-import { validateForm, vaidateEmail, validatePassword } from '../../utils';
+import {
+  validateForm,
+  vaidateEmail,
+  validatePassword,
+  parseErrors,
+} from '../../utils';
 import classes from './Registration.module.css';
 import Input from '../Input/Input';
 import * as actions from '../../store/actions';
+import ErrorAlert from '../ErrorAlert/ErrorAlert';
 
 const getFormData = formValueSelector('RegistrationForm');
 
@@ -18,29 +24,40 @@ const mapStateToProps = state => {
   const formValues = getFormData(state, 'email', 'password', 'confirm');
   const props = {
     formValues,
+    ui: state.ui,
   };
   return props;
 };
 
 const actionCreators = {
   registration: actions.auth,
+  registrationFailure: actions.registrationFailure,
 };
 
 class Registration extends React.Component {
   submitHandler = async value => {
-    const { reset, registration } = this.props;
+    const { reset, registration, registrationFailure } = this.props;
     const { email, password } = value;
     try {
       await registration(email, password, 'registration');
     } catch (e) {
-      console.log('сервер не отвечает');
-      throw new SubmissionError({ _error: e.message });
+      registrationFailure();
+      const error = new SubmissionError({ ...e });
+      const errorMessage = parseErrors(error, e);
+      throw new SubmissionError({ _error: errorMessage });
     }
     reset();
   };
 
   render() {
-    const { handleSubmit, submitting, pristine, formValues } = this.props;
+    const {
+      handleSubmit,
+      submitting,
+      pristine,
+      formValues,
+      error,
+      ui: { registrationState },
+    } = this.props;
     const { email, password, confirm } = formValues;
     const isValidEmail = vaidateEmail(email);
     const isValidPassword = validatePassword(password);
@@ -99,6 +116,10 @@ class Registration extends React.Component {
               Registration
             </Button>
           </Form>
+          {registrationState === 'failure' && (
+            <ErrorAlert processName="registrationState">{error}</ErrorAlert>
+          )}
+          {submitting && <Spinner animation="grow" variant="dark" />}
         </div>
       </>
     );

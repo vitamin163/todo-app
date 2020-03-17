@@ -6,14 +6,15 @@ const mapStateToProps = state => ({
   ui: state.ui,
 });
 
-const ButtonRemove = ({ onClick, ui: { removeStatus } }) => {
+const ButtonRemove = ({ onClick, ui: { removeState } }) => {
+  const disabled = removeState === 'request';
   return (
     <Button
       variant="secondary"
       size="sm"
       onClick={onClick}
       type="button"
-      disabled={removeStatus}
+      disabled={disabled}
     >
       &times;
     </Button>

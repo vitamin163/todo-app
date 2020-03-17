@@ -5,41 +5,57 @@ import {
   SubmissionError,
   formValueSelector,
 } from 'redux-form';
-import { Button, Form } from 'react-bootstrap';
+import { Button, Form, Spinner } from 'react-bootstrap';
 import { connect } from 'react-redux';
 import { NavLink } from 'react-router-dom';
 import classes from './Auth.module.css';
 import Input from '../Input/Input';
 import * as actions from '../../store/actions';
-import { validateForm, vaidateEmail, validatePassword } from '../../utils';
+import {
+  validateForm,
+  vaidateEmail,
+  validatePassword,
+  parseErrors,
+} from '../../utils';
+import ErrorAlert from '../ErrorAlert/ErrorAlert';
 
 const getFormData = formValueSelector('authForm');
 
 const mapStateToProps = state => ({
   userId: state.auth.userId,
   formValues: getFormData(state, 'email', 'password'),
+  ui: state.ui,
 });
 
 const actionCreators = {
   login: actions.auth,
+  authFailure: actions.authFailure,
 };
 
 class Auth extends React.Component {
   submitHandler = async value => {
-    const { reset, login } = this.props;
+    const { reset, login, authFailure } = this.props;
     const { email, password } = value;
     try {
       await login(email, password, 'login');
     } catch (e) {
-      console.log(e);
-      console.log('Ошибка доступа');
-      throw new SubmissionError({ _error: e.message });
+      authFailure();
+      const error = new SubmissionError({ ...e });
+      const errorMessage = parseErrors(error, e);
+      throw new SubmissionError({ _error: errorMessage });
     }
     reset();
   };
 
   render() {
-    const { handleSubmit, submitting, pristine, formValues } = this.props;
+    const {
+      handleSubmit,
+      submitting,
+      pristine,
+      formValues,
+      error,
+      ui: { authState },
+    } = this.props;
     const { email, password } = formValues;
     const isValidEmail = vaidateEmail(email);
     const isValidPassword = validatePassword(password);
@@ -96,6 +112,10 @@ class Auth extends React.Component {
                 <Button variant="primary">Registration</Button>
               </NavLink>
             </div>
+            {authState === 'failure' && (
+              <ErrorAlert processName="authState">{error}</ErrorAlert>
+            )}
+            {submitting && <Spinner animation="grow" variant="dark" />}
           </Form>
         </div>
       </>
