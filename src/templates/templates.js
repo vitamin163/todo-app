@@ -19,7 +19,6 @@ export const dbNewUser = (email, uid) => ({
       taskIds: false,
     },
   },
-  status: 'all',
 });
 
 export const newUser = email => ({
@@ -42,5 +41,5 @@ export const newUser = email => ({
       taskIds: [],
     },
   },
-  status: 'all',
+  show: 'all',
 });

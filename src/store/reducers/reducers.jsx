@@ -87,7 +87,7 @@ const auth = handleActions(
 const users = handleActions(
   {
     [actions.registrationSuccess](state, { payload: { email } }) {
-      return { ...state, [email]: newUser(email) };
+      return { ...state, ...newUser(email) };
     },
     [actions.fetchTasksSuccess](state, { payload: { tasks, columns } }) {
       const chekTasks = tasks || {};
