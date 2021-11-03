@@ -21,7 +21,7 @@
     "redux-actions": "^2.6.5",
     "redux-form": "^8.3.0",
     "redux-thunk": "^2.3.0",
-    "validator": "^12.2.0"
+    "validator": "^13.7.0"
   },
   "scripts": {
     "start": "react-scripts start",
